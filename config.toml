@@ -1,0 +1,30 @@
+[global]
+name = "Envlt"
+plugin_type = "Maya"
+version = "0.1.0"
+author = "wangshuo"
+description = "这是环境工具，集合了资产，地形，散步的功能"
+log = true
+tests = true
+templates = true
+libs = true
+wiki_path = ""
+video_path = ""
+labels = []
+
+[global.standalone]
+enable = false
+path = ""
+
+[plugin_config]
+ui = true
+
+[plugin_config.menu]
+path = ""
+shortcut = "None"
+icon = "None"
+tooltip = "None"
+
+[release_config]
+release_path = 'C:\dev\maya\Envlt\release'
+exclude_folder = ["tests"]
