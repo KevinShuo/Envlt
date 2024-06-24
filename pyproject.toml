@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Maya_Envlt"
+version = "0.1.0"
+description = "A Maya plugin for environment pipeline tools"
+readme = "README.md"
+authors = [
+    { name = "wangshuo", email = "wangshuoart@gmail.com" },
+    { name = "zhuyihan", email = "" }
+]
+license = { file = "LICENSE" }
+keywords = ["maya", "plugin", "3D", "Envlt"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.dependencies]
+maya = "^2022"
+# Add other dependencies here
+# e.g., numpy = "^1.23"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
