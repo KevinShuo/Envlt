@@ -3,4 +3,8 @@
     <file>login_bg.jpg</file>
     <file>main_bg.jpg</file>
   </qresource>
+  <qresource prefix="create_new_scene">
+    <file>md-radio-button-on.png</file>
+    <file>md-radio-button-off.png</file>
+  </qresource>
 </RCC>

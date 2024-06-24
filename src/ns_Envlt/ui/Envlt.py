@@ -46,11 +46,12 @@ class Ui_mainWindows(object):
                                  "}\n"
                                  "QFrame#Head QLabel#title{\n"
                                  "    color:#1E2022;\n"
-                                 "    font-size:15px;\n"
+                                 "    font-size:16px;\n"
                                  "    font-weight:bold;\n"
-                                 "    Padding:1px;\n"
+                                 "    Padding:2px;\n"
                                  "    font-family:Comic Sans MS,serif;\n"
                                  "    letter-spacing:2px;\n"
+                                 "    font-style:oblique;\n"
                                  "}\n"
                                  "\n"
                                  "QFrame#Head QPushButton#new_button,QFrame#Head QPushButton#about_button,QFrame#Head QPushButton#project{\n"
@@ -195,7 +196,7 @@ class Ui_mainWindows(object):
         self.verticalLayout.addWidget(self.frame_2)
 
         self.retranslateUi(mainWindows)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(mainWindows)
 
     def retranslateUi(self, mainWindows):
@@ -210,4 +211,4 @@ class Ui_mainWindows(object):
         self.subtitle_2.setText(_translate("mainWindows", "Support: ABC and USD"))
 
 
-from ns_Envlt.ui import envlt_rc
+from ns_Envlt.ui.resources import envlt_rc

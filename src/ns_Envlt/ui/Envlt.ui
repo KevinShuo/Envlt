@@ -54,11 +54,12 @@ border:none
 }
 QFrame#Head QLabel#title{
 	color:#1E2022;
-	font-size:15px;
+	font-size:16px;
 	font-weight:bold;
-	Padding:1px;
+	Padding:2px;
 	font-family:Comic Sans MS,serif;
 	letter-spacing:2px;
+	font-style:oblique;
 }
 
 QFrame#Head QPushButton#new_button,QFrame#Head QPushButton#about_button,QFrame#Head QPushButton#project{
@@ -160,13 +161,6 @@ QFrame#Head QPushButton#new_button:hover,QFrame#Head QPushButton#about_button:ho
            </property>
            <property name="text">
             <string>Project</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton">
-           <property name="text">
-            <string>Asset</string>
            </property>
           </widget>
          </item>
@@ -349,8 +343,8 @@ QWidget#project_view{
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>713</width>
+               <height>487</height>
               </rect>
              </property>
             </widget>
