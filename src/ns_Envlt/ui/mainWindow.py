@@ -83,7 +83,7 @@ class mainWindow(QWidget):
         Returns:
 
         """
-        from . import create_new_scene
+        from ns_Envlt.ui import create_new_scene
         reload(create_new_scene)
         self.create_scene_ui = create_new_scene.Ui_create_scene()
         create_scene_widget = QWidget(self)
