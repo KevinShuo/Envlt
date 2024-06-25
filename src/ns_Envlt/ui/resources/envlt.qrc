@@ -3,8 +3,23 @@
     <file>login_bg.jpg</file>
     <file>main_bg.jpg</file>
   </qresource>
+  <qresource prefix="dialog">
+    <file>disable.png</file>
+    <file>gaojing.png</file>
+    <file>enable .png</file>
+    <file>warning.png</file>
+    <file>information .png</file>
+    <file>info.png</file>
+  </qresource>
   <qresource prefix="create_new_scene">
     <file>md-radio-button-on.png</file>
     <file>md-radio-button-off.png</file>
+  </qresource>
+  <qresource prefix="common">
+    <file>admin.png</file>
+    <file>show-password .png</file>
+    <file>safer .png</file>
+    <file>plus .png</file>
+    <file>projects .png</file>
   </qresource>
 </RCC>

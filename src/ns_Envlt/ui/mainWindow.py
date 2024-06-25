@@ -4,9 +4,11 @@
 # @Email : 204062518@qq.com
 # @File : mainWindow.py
 # @Project : Envlt
+import datetime
+import getpass
 import os
 from enum import Enum
-from ns_Envlt.ui import Envlt
+from ns_Envlt.ui import Envlt, envlt_messagebox
 from ns_Envlt.envlt_db import envlt_database
 from ns_Envlt.utils import os_util
 from maya.OpenMayaUI import MQtUtil_mainWindow
@@ -18,6 +20,7 @@ from importlib import reload
 
 reload(os_util)
 reload(envlt_database)
+reload(envlt_messagebox)
 
 
 class PageType(Enum):
@@ -128,25 +131,39 @@ class mainWindow(QWidget):
         Returns:
 
         """
+        dialog = envlt_messagebox.EnvltDialog()
         if not self.create_scene_ui.lineEdit_name.text():
-            QMessageBox.critical(self, "error", "请填写插件名字")
+            dialog.warning("信息不全", "请填写插件名字")
             return
+        # scene name
         scene_name = self.create_scene_ui.lineEdit_name.text()
+        # image path
         image = self.create_scene_ui.lineEdit_image.text()
+        image_server_path = None
         if image and os.path.exists(image):
             img_scene = os_util.UIResource()
-            server_path = img_scene.upload_img(image)
-            if not server_path:
-                QMessageBox.critical(self, "error", "上传图片失败")
-            print(server_path)
+            image_server_path = img_scene.upload_img(image)
+            if not image_server_path:
+                dialog.error("上传图片失败", "上传图片到服务器失败,请联系TD")
+                raise AttributeError("上传图片失败")
         elif not os.path.exists(image):
-            QMessageBox.critical(self, "error", "图片路径不存在")
-        elif not image:
-            pass
+            dialog.error("图片路径不存在", "图片路径不存在")
+            raise OSError("图片路径不存在")
         else:
             pass
+        # description
+        description = self.create_scene_ui.textEdit_description.toPlainText()
+        # time
+        now_time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        # user
+        user = getpass.getuser()
 
-        # scene_data = envlt_database.ProjectDbData()
+        scene_data = envlt_database.ProjectDbData(scene_name, image_server_path, description, now_time, now_time, user,
+                                                  enable=True)
+        try:
+            self.envlt_project_database.create_new_scene(scene_data)
+        except envlt_database.SceneExistsError as e:
+            dialog.error("错误", "场景已存在服务器")
 
     def choose_image(self):
         file_dialog_util = os_util.QFileDialogUtil()
