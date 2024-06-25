@@ -256,7 +256,7 @@ class Ui_create_scene(object):
     def retranslateUi(self, create_scene):
         _translate = QtCore.QCoreApplication.translate
         create_scene.setWindowTitle(_translate("create_scene", "create_new_scene"))
-        self.title.setText(_translate("create_scene", "Create new scene"))
+        self.title.setText(_translate("create_scene", "Create new scene(TestVersion)"))
         self.radioButton_create.setText(_translate("create_scene", "New"))
         self.radioButton_clone.setText(_translate("create_scene", "Clone"))
         self.label.setText(_translate("create_scene", "Name:"))
