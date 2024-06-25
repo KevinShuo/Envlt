@@ -8,7 +8,7 @@ import os
 from enum import Enum
 from ns_Envlt.ui import Envlt
 from ns_Envlt.envlt_db import envlt_database
-from ns_Envlt.utils import file_util
+from ns_Envlt.utils import os_util
 from maya.OpenMayaUI import MQtUtil_mainWindow
 from PySide2.QtWidgets import *
 from PySide2.QtGui import *
@@ -16,7 +16,7 @@ from PySide2.QtCore import Qt
 from shiboken2 import wrapInstance
 from importlib import reload
 
-reload(file_util)
+reload(os_util)
 reload(envlt_database)
 
 
@@ -95,7 +95,7 @@ class mainWindow(QWidget):
 
     def init_create_scene_ui(self):
         # set image
-        file_utils = file_util.UIResource()
+        file_utils = os_util.UIResource()
         select_image = file_utils.get_icon_path("select_image.png")
         select_image_icon = QPixmap(select_image)
         select_image_icon.scaledToWidth(64)
@@ -124,6 +124,7 @@ class mainWindow(QWidget):
              1.获取场景名字
              2.获取场景图片路径
                 - 如果图片存在
+                    - 比较md5数值 如果数值相同 则直接返回服务器的路径，如果数值不相同，拷贝一个新的文件到服务器，并且重命名
         Returns:
 
         """
@@ -133,7 +134,7 @@ class mainWindow(QWidget):
         scene_name = self.create_scene_ui.lineEdit_name.text()
         image = self.create_scene_ui.lineEdit_image.text()
         if image and os.path.exists(image):
-            img_scene = file_util.UIResource()
+            img_scene = os_util.UIResource()
             server_path = img_scene.upload_img(image)
             if not server_path:
                 QMessageBox.critical(self, "error", "上传图片失败")
@@ -148,10 +149,13 @@ class mainWindow(QWidget):
         # scene_data = envlt_database.ProjectDbData()
 
     def choose_image(self):
-        file_path, _ = QFileDialog.getOpenFileName(self, "请选择一个图片", "c:/")
+        file_dialog_util = os_util.QFileDialogUtil()
+        last_path = file_dialog_util.get_last_choose_path()
+        file_path, _ = QFileDialog.getOpenFileName(self, "请选择一个图片", "c:/" if not last_path else last_path)
         if not file_path:
             return
         self.create_scene_ui.lineEdit_image.setText(file_path)
+        file_dialog_util.write_last_choose_path(file_path)
 
     def switch_new_exists_page(self):
         """
