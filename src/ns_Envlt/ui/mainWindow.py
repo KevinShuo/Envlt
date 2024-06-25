@@ -162,6 +162,7 @@ class mainWindow(QWidget):
                                                   enable=True)
         try:
             self.envlt_project_database.create_new_scene(scene_data)
+            dialog.information("创建成功", f"创建{scene_name}场景 成功")
         except envlt_database.SceneExistsError as e:
             dialog.error("错误", "场景已存在服务器")
 
