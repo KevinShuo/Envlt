@@ -9,7 +9,7 @@ description = "A Maya plugin for environment pipeline tools"
 readme = "README.md"
 authors = [
     { name = "wangshuo", email = "wangshuoart@gmail.com" },
-    { name = "zhuyihan", email = "" }
+    { name = "zhuyihan", email = "dmxzc291@163.com" }
 ]
 license = { file = "LICENSE" }
 keywords = ["maya", "plugin", "3D", "Envlt"]
