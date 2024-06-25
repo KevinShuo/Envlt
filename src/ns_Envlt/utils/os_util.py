@@ -94,7 +94,7 @@ class QFileDialogUtil:
         """
         self.temp = temp.EnvltTemp("Envlt")
 
-    def wirte_last_choose_path(self, path: str):
+    def write_last_choose_path(self, path: str):
         """
             记录QFileDialog最后选择的路径
         """

@@ -155,7 +155,7 @@ class mainWindow(QWidget):
         if not file_path:
             return
         self.create_scene_ui.lineEdit_image.setText(file_path)
-        file_dialog_util.wirte_last_choose_path(file_path)
+        file_dialog_util.write_last_choose_path(file_path)
 
     def switch_new_exists_page(self):
         """
