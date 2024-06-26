@@ -9,6 +9,7 @@ import getpass
 import os
 from enum import Enum
 from ns_Envlt.ui import Envlt, envlt_messagebox
+from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import envlt_database
 from ns_Envlt.utils import os_util
 from ns_Envlt.error import database_error
@@ -169,8 +170,8 @@ class mainWindow(QWidget):
         # user
         user = getpass.getuser()
 
-        scene_data = envlt_database.ProjectDbData(scene_name, image_server_path, description, now_time, now_time, user,
-                                                  enable=True)
+        scene_data = database_data.ProjectDbData(scene_name, image_server_path, description, now_time, now_time, user,
+                                                 enable=True)
         try:
             self.envlt_project_database.create_new_scene(scene_data)
             self.envlt_project_database.create_new_asset_table(scene_name)
