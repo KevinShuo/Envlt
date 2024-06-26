@@ -14,9 +14,12 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(525, 215)
+        Dialog.resize(490, 202)
         Dialog.setStyleSheet("QFrame{\n"
                              "    border:none;\n"
+                             "}\n"
+                             "QDialog{\n"
+                             "    background-color:#F0F5F9;\n"
                              "}\n"
                              "QFrame#frame{\n"
                              "    background-color:#C9D6DF;\n"
@@ -24,7 +27,7 @@ class Ui_Dialog(object):
                              "    border-radius:10px;\n"
                              "}\n"
                              "QLabel#label_title{\n"
-                             "    font-size:24px;\n"
+                             "    font-size:20px;\n"
                              "    font-weight:bold;\n"
                              "    font-family:\"Heiti\";\n"
                              "    color:#34373b;\n"
@@ -35,8 +38,8 @@ class Ui_Dialog(object):
                              "    color:#788189;\n"
                              "}\n"
                              "QPushButton{\n"
-                             "    width:150%;\n"
-                             "    height:30%;\n"
+                             "    width:110%;\n"
+                             "    height:20%;\n"
                              "    border:1px solid #1E2022;\n"
                              "    border-radius:10px;\n"
                              "    color:#34373b;\n"
@@ -63,6 +66,7 @@ class Ui_Dialog(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.label = QtWidgets.QLabel(self.frame_left)
         self.label.setMaximumSize(QtCore.QSize(64, 64))
+        self.label.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.label.setText("")
         self.label.setPixmap(QtGui.QPixmap(":/dialog/information .png"))
         self.label.setScaledContents(True)

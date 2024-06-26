@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>525</width>
-    <height>215</height>
+    <width>490</width>
+    <height>202</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,13 +17,16 @@
    <string notr="true">QFrame{
 	border:none;
 }
+QDialog{
+	background-color:#F0F5F9;
+}
 QFrame#frame{
 	background-color:#C9D6DF;
 	border:1px solid #788189;
 	border-radius:10px;
 }
 QLabel#label_title{
-	font-size:24px;
+	font-size:20px;
 	font-weight:bold;
 	font-family:&quot;Heiti&quot;;
 	color:#34373b;
@@ -34,8 +37,8 @@ QLabel#label_content{
 	color:#788189;
 }
 QPushButton{
-	width:150%;
-	height:30%;
+	width:110%;
+	height:20%;
 	border:1px solid #1E2022;
 	border-radius:10px;
 	color:#34373b;
@@ -73,6 +76,9 @@ QPushButton:hover,QPushButton:pressed{
              <width>64</width>
              <height>64</height>
             </size>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
            </property>
            <property name="text">
             <string/>

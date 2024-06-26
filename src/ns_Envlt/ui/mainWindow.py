@@ -11,6 +11,7 @@ from enum import Enum
 from ns_Envlt.ui import Envlt, envlt_messagebox
 from ns_Envlt.envlt_db import envlt_database
 from ns_Envlt.utils import os_util
+from ns_Envlt.error import database_error
 from maya.OpenMayaUI import MQtUtil_mainWindow
 from PySide2.QtWidgets import *
 from PySide2.QtGui import *
@@ -52,9 +53,6 @@ class mainWindow(QWidget):
         self.envlt.stackedWidget.setCurrentIndex(0)
         # init project database
         self.envlt_project_database = envlt_database.EnvltProjectDatabase()
-        # db1 = envlt_database.ProjectDbData(scene_name="b1", image_path="aa.jpg", description="fff", create_date="129.0",
-        #                                    modify_date="222", create_user="ws", enable=True)
-        # self.envlt_project_database.create_new_scene(db1)
 
     def init_slot(self):
         """
@@ -107,7 +105,8 @@ class mainWindow(QWidget):
         self.create_scene_ui.lineEdit_image.addAction(self.widgetAction_choose_image, QLineEdit.TrailingPosition)
         # get scene name
         all_name = self.envlt_project_database.get_all_scene_name()
-        self.create_scene_ui.comboBox_choose_project.addItems(all_name)
+        if all_name:
+            self.create_scene_ui.comboBox_choose_project.addItems(all_name)
 
     def init_create_scene_slot(self):
         """
@@ -117,10 +116,22 @@ class mainWindow(QWidget):
 
         """
         self.create_scene_ui.radioButton_create.toggled.connect(self.switch_new_exists_page)
-        self.create_scene_ui.pushButton_create.clicked.connect(self.create_new_scene)
+        self.create_scene_ui.pushButton_create.clicked.connect(self.create_scene)
         self.widgetAction_choose_image.triggered.connect(self.choose_image)
 
-    def create_new_scene(self):
+    def create_scene(self):
+        """
+            创建一个新的场景
+                1. 创建一个新的场景(空的)
+                2. 根据已有场景 拷贝已有的场景到新的场景里
+        :return:
+        """
+        if self.create_scene_ui.radioButton_create.isChecked():
+            self._create_new_scene()
+        else:
+            self._clone_scene()
+
+    def _create_new_scene(self):
         """
             创建一个新的场景
             步骤
@@ -162,9 +173,28 @@ class mainWindow(QWidget):
                                                   enable=True)
         try:
             self.envlt_project_database.create_new_scene(scene_data)
+            self.envlt_project_database.create_new_asset_table(scene_name)
             dialog.information("创建成功", f"创建{scene_name}场景 成功")
-        except envlt_database.SceneExistsError as e:
-            dialog.error("错误", "场景已存在服务器")
+            del self.envlt_project_database
+        except database_error.SceneExistsError as e:
+            dialog.error("错误", "场景已存在")
+
+    def _clone_scene(self):
+        """
+            克隆一个场景
+        :return:
+        """
+        select_scene = self.create_scene_ui.comboBox_choose_project.currentText()
+        scene_data = self.envlt_project_database.get_global_scene_data(select_scene)
+        if not scene_data:
+            raise database_error.SceneNoExistsError("Scene is not exists")
+
+    def clone_exists_scene(self):
+        """
+            克隆一个已有的场景
+
+        :return:
+        """
 
     def choose_image(self):
         file_dialog_util = os_util.QFileDialogUtil()
