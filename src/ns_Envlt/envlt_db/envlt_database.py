@@ -134,14 +134,34 @@ from project_data"""
                     has_not_list.append(database_data.NoExistsData(name))
                     continue
                 _id, name, image, description, create_date, modify_date, create_user, enable = data
-                data = database_data.ProjectDbData(name, image, description, create_date, modify_date, create_user, enable)
+                data = database_data.ProjectDbData(name, image, description, create_date, modify_date, create_user,
+                                                   enable)
                 rt_data.append(data)
             return rt_data, has_not_list
         else:
             raise AttributeError("不支持此数据查询")
 
-    def get_asset_libs_data(self, scene_name: str):
-        pass
+    def get_asset_libs_data(self, scene_name: str) -> Optional[List[database_data.AssetDbData]]:
+        """
+            获取场景里的所有资产数据
+
+        :param scene_name: 要获取场景的场景名
+        :return:
+        """
+        # 获取场景里资产所有数据
+        assets = []
+        command_get_asset_lib = f"""SELECT * FROM {scene_name}_libs"""
+        c = self.conn.cursor()
+        c.execute(command_get_asset_lib)
+        datas = c.fetchall()
+        if not datas:
+            return
+        for data in datas:
+            _id, name, path, asset_type, tab_type, image, description, labels, enable = data
+            asset_data = database_data.AssetDbData(_id, name, path, asset_type, tab_type, image, description, labels,
+                                                   enable)
+            assets.append(asset_data)
+        return assets
 
     @property
     def db_path(self) -> str:

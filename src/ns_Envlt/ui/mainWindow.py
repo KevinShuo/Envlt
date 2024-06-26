@@ -188,7 +188,10 @@ class mainWindow(QWidget):
         scene_data = self.envlt_project_database.get_global_scene_data(select_scene)
         if not scene_data:
             raise database_error.SceneNoExistsError("Scene is not exists")
-        print(scene_data)
+        # 获取原表的数据
+        db = self.envlt_project_database.get_asset_libs_data(select_scene)
+        for i in db:
+            print(i)
 
     def clone_exists_scene(self):
         """
