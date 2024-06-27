@@ -3,3 +3,4 @@
 /.idea/
 src/ns_Envlt/ui/resources/img_project/ai_roto_icon.jpg
 *.sqlite
+*.sqlite
