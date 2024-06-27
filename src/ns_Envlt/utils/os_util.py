@@ -110,3 +110,6 @@ class QFileDialogUtil:
         if not data:
             return
         return data["path"]
+
+    def _a(self):
+        pass

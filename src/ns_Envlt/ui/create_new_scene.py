@@ -16,26 +16,26 @@ class Ui_create_scene(object):
         create_scene.setObjectName("create_scene")
         create_scene.resize(413, 514)
         create_scene.setStyleSheet("QWidget#create_scene{\n"
-                                   "    background-color:#F0F5F9;\n"
+                                   "    background-color:#292e3b;\n"
                                    "}\n"
                                    "\n"
                                    "QFrame#frame{\n"
-                                   "    border:1px solid #C9D6DF;\n"
+                                   "    border:1px solid #414654;\n"
                                    "    border-radius:20px;\n"
-                                   "    background-color:#C9D6DF;\n"
+                                   "    background-color:#414654;\n"
                                    "}\n"
                                    "QFrame#choose_page{\n"
-                                   "    border:1px solid #C9D6DF;\n"
-                                   "    border-radius:10px;\n"
+                                   "    border:1px solid #ffecda;\n"
+                                   "    border-radius:9px;\n"
                                    "}\n"
                                    "\n"
                                    "QFrame#frame_3{\n"
-                                   "    background-color:#F0F5F9;\n"
-                                   "    border:1px solid #F0F5F9;\n"
+                                   "    background-color:#292e3b;\n"
+                                   "    border:1px solid #292e3b;\n"
                                    "    border-radius:10px;\n"
                                    "}\n"
                                    "QLabel{\n"
-                                   "    color:#34373b;\n"
+                                   "    color:#FFFFFF;\n"
                                    "    font-size:13px;\n"
                                    "    font-family:\"Georgia\"\n"
                                    "}\n"
@@ -45,24 +45,24 @@ class Ui_create_scene(object):
                                    "    font-weight:bold;\n"
                                    "    font-family:\"Arial Black\";\n"
                                    "    letter-spacing:2px;\n"
-                                   "    color:#34373b;\n"
+                                   "    color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0.197849 rgba(86, 100, 123, 255), stop:0.890323 rgba(180, 194, 220, 255));\n"
                                    "    font-style:oblique;\n"
                                    "}\n"
                                    "QPushButton{\n"
                                    "    border:none;\n"
                                    "    border-radius:10px;\n"
-                                   "    background-color:#1E2022;\n"
+                                   "    background-color:#FF4D4D;\n"
                                    "    color:#F0F5F9;\n"
                                    "    height:2em;\n"
                                    "    font-family:\"Garamond\";\n"
                                    "    font-size:16px;\n"
-                                   "    padding:3px;\n"
+                                   "    padding:1px;\n"
                                    "    font-weight:bold;\n"
                                    "}\n"
                                    "QPushButton:hover{\n"
                                    "    border:none;\n"
                                    "    border-radius:10px;\n"
-                                   "    background-color:#C9D6DF;\n"
+                                   "    background-color:#ffecda;\n"
                                    "    color:#1E2022;\n"
                                    "    height:10em;\n"
                                    "    font-family:\"Garamond\";\n"
@@ -82,15 +82,16 @@ class Ui_create_scene(object):
                                    "    font-weight:bold;\n"
                                    "}\n"
                                    "QLineEdit,QTextEdit,QComboBox{\n"
-                                   "    background-color:#e1e4e6;\n"
-                                   "    color:#34373b;\n"
+                                   "    background-color:#414654;\n"
+                                   "    color:#FFFFFF;\n"
                                    "    font-family:\"Georgia\";\n"
                                    "    font-size:13px;\n"
+                                   "    border-radius:4px;\n"
                                    "}\n"
                                    "QRadioButton{\n"
                                    "    font-family:\"Arial Black\";\n"
-                                   "    font-size:13px;\n"
-                                   "    color:#34373b;\n"
+                                   "    font-size:14px;\n"
+                                   "    color:#e0e0e0;\n"
                                    "    font-style:oblique;\n"
                                    "}\n"
                                    "QRadioButton::indicator {\n"
@@ -167,18 +168,33 @@ class Ui_create_scene(object):
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setObjectName("formLayout")
         self.label = QtWidgets.QLabel(self.new_widget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy)
+        self.label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label.setObjectName("label")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label)
         self.lineEdit_name = QtWidgets.QLineEdit(self.new_widget)
         self.lineEdit_name.setObjectName("lineEdit_name")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.lineEdit_name)
         self.label_2 = QtWidgets.QLabel(self.new_widget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(1)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
+        self.label_2.setSizePolicy(sizePolicy)
+        self.label_2.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.label_2.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_2.setObjectName("label_2")
         self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_2)
         self.lineEdit_image = QtWidgets.QLineEdit(self.new_widget)
         self.lineEdit_image.setObjectName("lineEdit_image")
         self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.lineEdit_image)
         self.label_3 = QtWidgets.QLabel(self.new_widget)
+        self.label_3.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.label_3.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
         self.label_3.setObjectName("label_3")
         self.formLayout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.label_3)
         self.textEdit_description = QtWidgets.QTextEdit(self.new_widget)
