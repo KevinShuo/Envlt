@@ -17,3 +17,10 @@ class SceneNoExistsError(Exception):
         场景已存在错误
     """
     pass
+
+
+class SceneAssetNoDataError(Exception):
+    """
+        场景资产没用数据错误
+    """
+    pass

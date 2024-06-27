@@ -21,6 +21,7 @@ from shiboken2 import wrapInstance
 from importlib import reload
 
 reload(os_util)
+reload(Envlt)
 reload(envlt_database)
 reload(envlt_messagebox)
 
@@ -54,6 +55,8 @@ class mainWindow(QWidget):
         self.envlt.stackedWidget.setCurrentIndex(0)
         # init project database
         self.envlt_project_database = envlt_database.EnvltProjectDatabase()
+
+        self.dialog = envlt_messagebox.EnvltDialog()
 
     def init_slot(self):
         """
@@ -130,7 +133,10 @@ class mainWindow(QWidget):
         if self.create_scene_ui.radioButton_create.isChecked():
             self._create_new_scene()
         else:
-            self._clone_scene()
+            try:
+                self._clone_scene()
+            except database_error.SceneAssetNoDataError as e:
+                self.dialog.error("禁止拷贝空场景", str(e))
 
     def _create_new_scene(self):
         """
@@ -143,9 +149,9 @@ class mainWindow(QWidget):
         Returns:
 
         """
-        dialog = envlt_messagebox.EnvltDialog()
+
         if not self.create_scene_ui.lineEdit_name.text():
-            dialog.warning("信息不全", "请填写插件名字")
+            self.dialog.warning("信息不全", "请填写插件名字")
             return
         # scene name
         scene_name = self.create_scene_ui.lineEdit_name.text()
@@ -156,10 +162,10 @@ class mainWindow(QWidget):
             img_scene = os_util.UIResource()
             image_server_path = img_scene.upload_img(image)
             if not image_server_path:
-                dialog.error("上传图片失败", "上传图片到服务器失败,请联系TD")
+                self.dialog.error("上传图片失败", "上传图片到服务器失败,请联系TD")
                 raise AttributeError("上传图片失败")
         elif not os.path.exists(image):
-            dialog.error("图片路径不存在", "图片路径不存在")
+            self.dialog.error("图片路径不存在", "图片路径不存在")
             raise OSError("图片路径不存在")
         else:
             pass
@@ -175,10 +181,10 @@ class mainWindow(QWidget):
         try:
             self.envlt_project_database.create_new_scene(scene_data)
             self.envlt_project_database.create_new_asset_table(scene_name)
-            dialog.information("创建成功", f"创建{scene_name}场景 成功")
+            self.dialog.information("创建成功", f"创建{scene_name}场景 成功")
             del self.envlt_project_database
         except database_error.SceneExistsError as e:
-            dialog.error("错误", "场景已存在")
+            self.dialog.error("错误", "场景已存在")
 
     def _clone_scene(self):
         """
@@ -186,13 +192,14 @@ class mainWindow(QWidget):
         :return:
         """
         select_scene = self.create_scene_ui.comboBox_choose_project.currentText()
-        scene_data = self.envlt_project_database.get_global_scene_data(select_scene)
-        if not scene_data:
-            raise database_error.SceneNoExistsError("Scene is not exists")
         # 获取原表的数据
         db = self.envlt_project_database.get_asset_libs_data(select_scene)
+        if not db:
+            raise database_error.SceneAssetNoDataError("原始场景里没有数据,禁止克隆空的场景。")
         for i in db:
             print(i)
+        # 在总表里插入一行新的场景数据
+        # 构建一个新资产表
 
     def clone_exists_scene(self):
         """
