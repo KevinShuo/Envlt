@@ -163,6 +163,32 @@ from project_data"""
             assets.append(asset_data)
         return assets
 
+    def insert_data_to_table(self, origin_data:List[database_data.AssetDbData], scene_name:str):
+        """
+        往表中插入数据
+        :param origin_data:从表中获取的数据，类型为list
+        :param scene_name:总表中的场景名称
+        :return:
+        """
+        table_name = scene_name + "_libs"
+        command = f"""INSERT INTO {table_name} (name, path, asset_type, tab_type, image, description, labels, enable)
+        values (?, ?, ?, ?, ?, ?, ?,?)"""
+        # print(command)
+        for asset in origin_data:
+            data = (
+                asset.name,
+                asset.path,
+                asset.asset_type,
+                asset.tab_type,
+                asset.image,
+                asset.description,
+                asset.labels,
+                asset.enable
+            )
+            c = self.conn.cursor()
+            c.execute(command, data)
+        self.conn.commit()
+
     @property
     def db_path(self) -> str:
         """
@@ -190,4 +216,5 @@ from project_data"""
 
     def __del__(self):
         self.conn.close()
+
 

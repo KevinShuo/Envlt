@@ -40,6 +40,9 @@ class mainWindow(QWidget):
             Envlt mainWindow
         """
         super().__init__()
+
+        # time
+        self.now_time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         self.envlt = Envlt.Ui_mainWindows()
         self.envlt.setupUi(self)
         self.setParent(wrapInstance(int(MQtUtil_mainWindow()), QWidget))
@@ -107,6 +110,10 @@ class mainWindow(QWidget):
         self.widgetAction_choose_image = QWidgetAction(self.create_scene_ui.lineEdit_image)
         self.widgetAction_choose_image.setIcon(QIcon(select_image_icon))
         self.create_scene_ui.lineEdit_image.addAction(self.widgetAction_choose_image, QLineEdit.TrailingPosition)
+
+        self.widgetAction_choose_image_2 = QWidgetAction(self.create_scene_ui.lineEdit_image_2)
+        self.widgetAction_choose_image_2.setIcon(QIcon(select_image_icon))
+        self.create_scene_ui.lineEdit_image_2.addAction(self.widgetAction_choose_image_2, QLineEdit.TrailingPosition)
         # get scene name
         all_name = self.envlt_project_database.get_all_scene_name()
         if all_name:
@@ -122,6 +129,7 @@ class mainWindow(QWidget):
         self.create_scene_ui.radioButton_create.toggled.connect(self.switch_new_exists_page)
         self.create_scene_ui.pushButton_create.clicked.connect(self.create_scene)
         self.widgetAction_choose_image.triggered.connect(self.choose_image)
+        self.widgetAction_choose_image_2.triggered.connect(self.choose_image)
 
     def create_scene(self):
         """
@@ -151,7 +159,7 @@ class mainWindow(QWidget):
         """
 
         if not self.create_scene_ui.lineEdit_name.text():
-            self.dialog.warning("信息不全", "请填写插件名字")
+            self.dialog.warning("信息不全", "请填写场景名称")
             return
         # scene name
         scene_name = self.create_scene_ui.lineEdit_name.text()
@@ -171,12 +179,11 @@ class mainWindow(QWidget):
             pass
         # description
         description = self.create_scene_ui.textEdit_description.toPlainText()
-        # time
-        now_time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+
         # user
         user = getpass.getuser()
 
-        scene_data = database_data.ProjectDbData(scene_name, image_server_path, description, now_time, now_time, user,
+        scene_data = database_data.ProjectDbData(scene_name, image_server_path, description, self.now_time, self.now_time, user,
                                                  enable=True)
         try:
             self.envlt_project_database.create_new_scene(scene_data)
@@ -192,29 +199,50 @@ class mainWindow(QWidget):
         :return:
         """
         select_scene = self.create_scene_ui.comboBox_choose_project.currentText()
+        name_after_clone = self.create_scene_ui.lineEdit_name_2.text()
+        image_after_clone = self.create_scene_ui.lineEdit_image_2.text()
+        description_after_clone = self.create_scene_ui.textEdit_description_2.toPlainText()
+        user = getpass.getuser()
         # 获取原表的数据
         db = self.envlt_project_database.get_asset_libs_data(select_scene)
         if not db:
             raise database_error.SceneAssetNoDataError("原始场景里没有数据,禁止克隆空的场景。")
-        for i in db:
-            print(i)
+        # for i in db:
+        #     print(i)
+
         # 在总表里插入一行新的场景数据
+        clone_scene_data = database_data.ProjectDbData(name_after_clone, image_after_clone, description_after_clone, self.now_time,
+                                                 self.now_time, user,
+                                                 enable=True)
+        try:
+            self.envlt_project_database.create_new_scene(clone_scene_data)
+            self.envlt_project_database.create_new_asset_table(name_after_clone)
+            self.envlt_project_database.insert_data_to_table(db, name_after_clone)
+            self.dialog.information("创建成功", f"创建{name_after_clone}场景 成功")
+            del self.envlt_project_database
+        except database_error.SceneExistsError as e:
+            self.dialog.error("错误", "场景已存在")
         # 构建一个新资产表
 
-    def clone_exists_scene(self):
-        """
-            克隆一个已有的场景
 
-        :return:
-        """
 
     def choose_image(self):
+
         file_dialog_util = os_util.QFileDialogUtil()
         last_path = file_dialog_util.get_last_choose_path()
-        file_path, _ = QFileDialog.getOpenFileName(self, "请选择一个图片", "c:/" if not last_path else last_path)
+        # file_path, _ = QFileDialog.getOpenFileName(self, "请选择一个图片", "c:/" if not last_path else last_path)
+        file_types = "Images (*.png *.xpm *.jpg *.jpeg *.bmp *.gif)"
+        file_path, _ = QFileDialog.getOpenFileName(self, "请选择一个图片", "c:/" if not last_path else last_path,
+                                                   file_types)
+
         if not file_path:
             return
-        self.create_scene_ui.lineEdit_image.setText(file_path)
+        # 获取并判断触发槽函数对象
+        sender = self.sender()
+        if sender == self.widgetAction_choose_image:
+            self.create_scene_ui.lineEdit_image.setText(file_path)
+        elif sender == self.widgetAction_choose_image_2:
+            self.create_scene_ui.lineEdit_image_2.setText(file_path)
         file_dialog_util.write_last_choose_path(file_path)
 
     def switch_new_exists_page(self):
@@ -230,3 +258,5 @@ class mainWindow(QWidget):
             self.create_scene_ui.stackedWidget.setCurrentIndex(1)
         else:
             raise AttributeError("Has not support this page")
+
+

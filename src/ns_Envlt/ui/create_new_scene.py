@@ -272,7 +272,7 @@ class Ui_create_scene(object):
     def retranslateUi(self, create_scene):
         _translate = QtCore.QCoreApplication.translate
         create_scene.setWindowTitle(_translate("create_scene", "create_new_scene"))
-        self.title.setText(_translate("create_scene", "Create new scene"))
+        self.title.setText(_translate("create_scene", "Create new scene(TestVersion)"))
         self.radioButton_create.setText(_translate("create_scene", "New"))
         self.radioButton_clone.setText(_translate("create_scene", "Clone"))
         self.label.setText(_translate("create_scene", "Name:"))
@@ -281,9 +281,11 @@ class Ui_create_scene(object):
         self.lineEdit_image.setPlaceholderText(_translate("create_scene", "Choose a image for the view"))
         self.label_3.setText(_translate("create_scene", "Desciption"))
         self.textEdit_description.setPlaceholderText(_translate("create_scene", "Please enter scene the description"))
+
+        # 克隆页面部件
         self.label_5.setText(_translate("create_scene", "Scene:"))
         self.label_6.setText(_translate("create_scene", "Name:"))
-        self.lineEdit_name_2.setPlaceholderText(_translate("create_scene", "Please enter the scene name"))
+        self.lineEdit_name_2.setPlaceholderText(_translate("create_scene", "The name of the new scene after cloning"))
         self.label_7.setText(_translate("create_scene", "Image:"))
         self.lineEdit_image_2.setPlaceholderText(_translate("create_scene", "Choose a image for the view"))
         self.label_8.setText(_translate("create_scene", "Description:"))
