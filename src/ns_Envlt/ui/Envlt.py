@@ -21,7 +21,7 @@ class Ui_mainWindows(object):
         sizePolicy.setHeightForWidth(mainWindows.sizePolicy().hasHeightForWidth())
         mainWindows.setSizePolicy(sizePolicy)
         mainWindows.setStyleSheet("QWidget#mainWindows{\n"
-                                  "    background-color:#292e3b;\n"
+                                  "    background-color:#F0F5F9;\n"
                                   "}\n"
                                   "\n"
                                   "QStackedWidget#about{\n"
@@ -41,7 +41,7 @@ class Ui_mainWindows(object):
         self.frame.setSizePolicy(sizePolicy)
         self.frame.setMinimumSize(QtCore.QSize(0, 45))
         self.frame.setStyleSheet("QFrame#Head{\n"
-                                 "    background-color:#414654;\n"
+                                 "    background-color:#C9D6DF;\n"
                                  "    border-radius:17px;\n"
                                  "}\n"
                                  "QFrame#Head QLabel#title{\n"
@@ -55,7 +55,7 @@ class Ui_mainWindows(object):
                                  "}\n"
                                  "\n"
                                  "QFrame#Head QPushButton#new_button,QFrame#Head QPushButton#about_button,QFrame#Head QPushButton#project{\n"
-                                 "    color:#e0e0e0;\n"
+                                 "    color:#788189;\n"
                                  "    background-color:transparent;\n"
                                  "    font-size:15px;\n"
                                  "    font-weight:bold;\n"
@@ -64,7 +64,7 @@ class Ui_mainWindows(object):
                                  "}\n"
                                  "\n"
                                  "QFrame#Head QPushButton#new_button:hover,QFrame#Head QPushButton#about_button:hover,QFrame#Head QPushButton#project:hover{\n"
-                                 "    color:#FFFFFF;\n"
+                                 "    color:#34373b;\n"
                                  "}")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -130,18 +130,18 @@ class Ui_mainWindows(object):
         self.stackedWidget.setObjectName("stackedWidget")
         self.about = QtWidgets.QWidget()
         self.about.setStyleSheet("QLabel#main_title{\n"
-                                 "    color: qlineargradient(spread:pad, x1:1, y1:0, x2:1, y2:1, stop:0.21501 rgba(224, 224, 224, 255), stop:1 rgba(255, 255, 255, 255));\n"
+                                 "    color:#788189;\n"
                                  "    font-size:60px;\n"
                                  "    font-family:Impact;\n"
                                  "    letter-spacing:2px;\n"
                                  "}\n"
                                  "\n"
-                                 "QLabel#main_title:hover,QLabel#subtitle:hover,QLabel#subtitle_2:hover{\n"
-                                 "    color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0.197849 rgba(86, 100, 123, 255), stop:0.890323 rgba(180, 194, 220, 255));\n"
+                                 "QLabel#main_title:hover{\n"
+                                 "    color:#34373b;\n"
                                  "}\n"
                                  "\n"
                                  "QLabel#subtitle,QLabel#subtitle_2{\n"
-                                 "    color:#e0e0e0;\n"
+                                 "    color:#788189;\n"
                                  "    font-family:Segoe UI;\n"
                                  "    font-size:13px;\n"
                                  "}\n"
@@ -184,7 +184,7 @@ class Ui_mainWindows(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.project_view = QtWidgets.QWidget()
-        self.project_view.setGeometry(QtCore.QRect(0, 0, 100, 30))
+        self.project_view.setGeometry(QtCore.QRect(0, 0, 713, 487))
         self.project_view.setObjectName("project_view")
         self.scrollArea.setWidget(self.project_view)
         self.horizontalLayout_2.addWidget(self.scrollArea)
