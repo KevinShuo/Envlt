@@ -10,7 +10,6 @@ class ProjectUI(QWidget):
         self.max_height = 150
         self.current_columns = -1  # 用于跟踪当前列数
 
-        self.init_widgets()
         self.init_layout()
         self.add_frames()
         self.resizeEvent = self.on_resize  # 绑定窗口调整事件
