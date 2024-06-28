@@ -66,7 +66,8 @@ class mainWindow(QWidget):
         self.dialog = envlt_messagebox.EnvltDialog()
 
         # test
-        self.project_ui = project_ui.ProjectUI()
+        all_db = self.envlt_project_database.get_asset_libs_data("project_data")
+        self.project_ui = project_ui.ProjectUI(all_db)
         self.envlt.stackedWidget.addWidget(self.project_ui)
 
     def init_slot(self):
@@ -94,6 +95,7 @@ class mainWindow(QWidget):
             # self.envlt.stackedWidget.setCurrentIndex(1)
 
             # test
+
             self.envlt.stackedWidget.setCurrentWidget(self.project_ui)
 
     def create_new_scene_ui(self):

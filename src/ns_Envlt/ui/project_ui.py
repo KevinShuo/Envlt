@@ -1,17 +1,20 @@
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-
+from ns_Envlt.envlt_db import envlt_database
 
 class ProjectUI(QWidget):
-    def __init__(self):
+    def __init__(self, project_data):
         super(ProjectUI, self).__init__()
+
+        self.envlt_project_database = envlt_database.EnvltProjectDatabase()
+
         self.max_width = 200
         self.max_height = 150
         self.current_columns = -1  # 用于跟踪当前列数
 
         self.init_layout()
-        self.add_frames()
+        self.add_frames(project_data)
         self.resizeEvent = self.on_resize  # 绑定窗口调整事件
 
     def init_layout(self):
@@ -28,7 +31,7 @@ class ProjectUI(QWidget):
         main_layout.addWidget(self.scroll_area)
         self.setLayout(main_layout)
 
-    def create_frame(self, image_path, text):
+    def create_frame(self, image_path, scene_name):
         # 创建一个HoverableFrame
         card_frame = HoverableFrame()
         card_frame.setFrameShape(QFrame.Box)
@@ -47,7 +50,7 @@ class ProjectUI(QWidget):
         layout.addWidget(image)
 
         # 设置标签
-        label = QLabel(text)
+        label = QLabel(scene_name)
         label.setObjectName("frameLabel")  # 设置对象名称
         label.setStyleSheet("font-size: 14px; font-weight: bold; color: white; padding-top: 5px;")  # 设置文字样式
         label.setAlignment(Qt.AlignCenter)
@@ -83,10 +86,10 @@ class ProjectUI(QWidget):
         self.update_layout()
         super(ProjectUI, self).resizeEvent(event)
 
-    def add_frames(self):
+    def add_frames(self, project_data):
         self.frames = []
-        for i in range(10):
-            frame = self.create_frame(r"C:\Users\zhuyihan\Desktop\filelog需求.jpg", f"Scene: 13Hang_BaiET_{i}")
+        for i in project_data:
+            frame = self.create_frame(i.image_path, f"Scene: {i.scene_name} ")
             self.frames.append(frame)
         self.update_layout(force_update=True)  # 初始布局时强制更新
 
@@ -94,7 +97,10 @@ class ProjectUI(QWidget):
         sender = self.sender()
         label = sender.findChild(QLabel, "frameLabel")  # 根据对象名称查找QLabel
         if label:
-            print(label.text())
+            scene_name = label.text().split(":")[-1].strip()
+        scene_db = self.envlt_project_database.get_asset_libs_data(scene_name)
+        print(scene_db)
+
 
 
 class HoverableFrame(QFrame):

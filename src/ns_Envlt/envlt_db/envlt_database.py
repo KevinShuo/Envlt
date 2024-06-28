@@ -150,17 +150,30 @@ from project_data"""
         """
         # 获取场景里资产所有数据
         assets = []
-        command_get_asset_lib = f"""SELECT * FROM {scene_name}_libs"""
-        c = self.conn.cursor()
-        c.execute(command_get_asset_lib)
-        datas = c.fetchall()
-        if not datas:
-            return
-        for data in datas:
-            _id, name, path, asset_type, tab_type, image, description, labels, enable = data
-            asset_data = database_data.AssetDbData(_id, name, path, asset_type, tab_type, image, description, labels,
-                                                   enable)
-            assets.append(asset_data)
+        print(f"Received scene_name: {scene_name}")
+        if "project_data" in scene_name:
+            command_get_asset_lib = f"""SELECT * FROM {scene_name}"""
+            c = self.conn.cursor()
+            c.execute(command_get_asset_lib)
+            datas = c.fetchall()
+            if not datas:
+                return
+            for data in datas:
+                _id, name, image, description, creat_date, modify_date, creat_user, enable = data
+                asset_data = database_data.ProjectDbData(name, image, description, creat_date, modify_date, creat_user, enable)
+                assets.append(asset_data)
+        else:
+            command_get_asset_lib = f"""SELECT * FROM {scene_name}_libs"""
+            c = self.conn.cursor()
+            c.execute(command_get_asset_lib)
+            datas = c.fetchall()
+            if not datas:
+                return
+            for data in datas:
+                _id, name, path, asset_type, tab_type, image, description, labels, enable = data
+                asset_data = database_data.AssetDbData(_id, name, path, asset_type, tab_type, image, description, labels,
+                                                       enable)
+                assets.append(asset_data)
         return assets
 
     def insert_data_to_table(self, origin_data:List[database_data.AssetDbData], scene_name:str):
