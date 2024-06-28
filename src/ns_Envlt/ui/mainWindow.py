@@ -8,7 +8,7 @@ import datetime
 import getpass
 import os
 from enum import Enum
-from ns_Envlt.ui import Envlt, envlt_messagebox
+from ns_Envlt.ui import Envlt, envlt_messagebox,project_ui
 from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import envlt_database
 from ns_Envlt.utils import os_util
@@ -19,6 +19,10 @@ from PySide2.QtGui import *
 from PySide2.QtCore import Qt
 from shiboken2 import wrapInstance
 from importlib import reload
+
+
+
+reload(project_ui)
 
 reload(os_util)
 reload(Envlt)
@@ -61,6 +65,10 @@ class mainWindow(QWidget):
 
         self.dialog = envlt_messagebox.EnvltDialog()
 
+        # test
+        self.project_ui = project_ui.ProjectUI()
+        self.envlt.stackedWidget.addWidget(self.project_ui)
+
     def init_slot(self):
         """
             初始化信号
@@ -83,7 +91,10 @@ class mainWindow(QWidget):
         if page == PageType.About:
             self.envlt.stackedWidget.setCurrentIndex(0)
         elif page == PageType.Project:
-            self.envlt.stackedWidget.setCurrentIndex(1)
+            # self.envlt.stackedWidget.setCurrentIndex(1)
+
+            # test
+            self.envlt.stackedWidget.setCurrentWidget(self.project_ui)
 
     def create_new_scene_ui(self):
         """
@@ -220,7 +231,7 @@ class mainWindow(QWidget):
             del self.envlt_project_database
         except database_error.SceneExistsError as e:
             self.dialog.error("错误", "场景已存在")
-        # 构建一个新资产表
+
 
     def choose_image(self):
 
