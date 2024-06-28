@@ -223,9 +223,6 @@ class mainWindow(QWidget):
             del self.envlt_project_database
         except database_error.SceneExistsError as e:
             self.dialog.error("错误", "场景已存在")
-        # 构建一个新资产表
-
-
 
     def choose_image(self):
 
