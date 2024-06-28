@@ -3,7 +3,7 @@ from ns_Envlt.envlt_log import log_factory
 
 
 class MyTestCase(unittest.TestCase):
-    a = log_factory.LogFactory("unit_test", False)
+    a = log_factory.LogFactory("unit_test2", True)
 
     def test_write_log(self):
         self.a.write_log(log_level=log_factory.LogLevel.INFO, content="my_test")
