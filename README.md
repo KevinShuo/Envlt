@@ -9,6 +9,16 @@
 ### _wangshuo_  _zhuyihan_
 ***
 
+#### 2024/6/27
+
+- [x] 开发场景克隆功能: 
+   - [x] `envlt_database`模块中新增`insert_data_to_table`方法,用于往表中插入数据,接受参数类型为`列表`和`字符串`
+   - [x] `mainWindow`中完成`_clone_scene`方法
+- [x] 其余修改项：
+   - [x] 修改`mainWindow`中`choose_image`方法,使其可以根据触发槽函数对象不同设置不同文本框的内容
+   - [x] 将`mainWindow`中`now_time`变量设置为初始化变量,用于`_clone_scene`方法
+***
+
 #### 2024/06/26
 
 - [x] 开发建立资产表的功能
@@ -29,14 +39,6 @@
 
 ***
 
-#### 2024/6/27
-
-- [x] 开发场景克隆功能: 
-   - [x] `envlt_database`模块中新增`insert_data_to_table`方法,用于往表中插入数据,接受参数类型为`列表`和`字符串`
-   - [x] `mainWindow`中完成`_clone_scene`方法
-- [x] 其余修改项：
-   - [x] 修改`mainWindow`中`choose_image`方法,使其可以根据触发槽函数对象不同设置不同文本框的内容
-   - [x] 将`mainWindow`中`now_time`变量设置为初始化变量,用于`_clone_scene`方法
 
 
 

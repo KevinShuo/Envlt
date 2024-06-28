@@ -21,7 +21,7 @@ class Ui_mainWindows(object):
         sizePolicy.setHeightForWidth(mainWindows.sizePolicy().hasHeightForWidth())
         mainWindows.setSizePolicy(sizePolicy)
         mainWindows.setStyleSheet("QWidget#mainWindows{\n"
-                                  "    background-color:#F0F5F9;\n"
+                                  "    background-color:#292e3b;\n"
                                   "}\n"
                                   "\n"
                                   "QStackedWidget#about{\n"
@@ -41,7 +41,7 @@ class Ui_mainWindows(object):
         self.frame.setSizePolicy(sizePolicy)
         self.frame.setMinimumSize(QtCore.QSize(0, 45))
         self.frame.setStyleSheet("QFrame#Head{\n"
-                                 "    background-color:#C9D6DF;\n"
+                                 "    background-color:#414654;\n"
                                  "    border-radius:17px;\n"
                                  "}\n"
                                  "QFrame#Head QLabel#title{\n"
@@ -55,7 +55,7 @@ class Ui_mainWindows(object):
                                  "}\n"
                                  "\n"
                                  "QFrame#Head QPushButton#new_button,QFrame#Head QPushButton#about_button,QFrame#Head QPushButton#project{\n"
-                                 "    color:#788189;\n"
+                                 "    color:#e0e0e0;\n"
                                  "    background-color:transparent;\n"
                                  "    font-size:15px;\n"
                                  "    font-weight:bold;\n"
@@ -64,7 +64,7 @@ class Ui_mainWindows(object):
                                  "}\n"
                                  "\n"
                                  "QFrame#Head QPushButton#new_button:hover,QFrame#Head QPushButton#about_button:hover,QFrame#Head QPushButton#project:hover{\n"
-                                 "    color:#34373b;\n"
+                                 "    color:#FFFFFF;\n"
                                  "}")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
