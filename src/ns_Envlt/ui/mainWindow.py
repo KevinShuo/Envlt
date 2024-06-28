@@ -61,6 +61,11 @@ class mainWindow(QWidget):
 
         self.dialog = envlt_messagebox.EnvltDialog()
 
+        from ns_Envlt.envlt_log import EnvLog, LogLevel
+
+        a = EnvLog(r"C:\dev\maya\Envlt\src\logs", "test")
+        a.write_log(LogLevel.DEBUG.name, "this is log test")
+
     def init_slot(self):
         """
             初始化信号
@@ -183,7 +188,8 @@ class mainWindow(QWidget):
         # user
         user = getpass.getuser()
 
-        scene_data = database_data.ProjectDbData(scene_name, image_server_path, description, self.now_time, self.now_time, user,
+        scene_data = database_data.ProjectDbData(scene_name, image_server_path, description, self.now_time,
+                                                 self.now_time, user,
                                                  enable=True)
         try:
             self.envlt_project_database.create_new_scene(scene_data)
@@ -207,13 +213,10 @@ class mainWindow(QWidget):
         db = self.envlt_project_database.get_asset_libs_data(select_scene)
         if not db:
             raise database_error.SceneAssetNoDataError("原始场景里没有数据,禁止克隆空的场景。")
-        # for i in db:
-        #     print(i)
-
         # 在总表里插入一行新的场景数据
-        clone_scene_data = database_data.ProjectDbData(name_after_clone, image_after_clone, description_after_clone, self.now_time,
-                                                 self.now_time, user,
-                                                 enable=True)
+        clone_scene_data = database_data.ProjectDbData(name_after_clone, image_after_clone, description_after_clone,
+                                                       self.now_time,
+                                                       self.now_time, user, enable=True)
         try:
             self.envlt_project_database.create_new_scene(clone_scene_data)
             self.envlt_project_database.create_new_asset_table(name_after_clone)
@@ -223,8 +226,6 @@ class mainWindow(QWidget):
         except database_error.SceneExistsError as e:
             self.dialog.error("错误", "场景已存在")
         # 构建一个新资产表
-
-
 
     def choose_image(self):
 
@@ -258,5 +259,3 @@ class mainWindow(QWidget):
             self.create_scene_ui.stackedWidget.setCurrentIndex(1)
         else:
             raise AttributeError("Has not support this page")
-
-
