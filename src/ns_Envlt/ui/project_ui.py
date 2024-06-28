@@ -8,6 +8,7 @@ class ProjectUI(QWidget):
         super(ProjectUI, self).__init__()
         self.max_width = 200
         self.max_height = 150
+        self.current_columns = -1  # 用于跟踪当前列数
 
         self.init_widgets()
         self.init_layout()
@@ -70,9 +71,17 @@ class ProjectUI(QWidget):
         for i in range(10):
             frame = self.create_frame(r"C:/Users/zhuyihan/Desktop/1111.png", f"资产名称: 13Hang_BaiET_{i}")
             self.frames.append(frame)
-        self.update_layout()
+        self.update_layout(force_update=True)  # 初始布局时强制更新
 
-    def update_layout(self):
+    def update_layout(self, force_update=False):
+        # 计算每行可以放置的QFrame数量
+        num_columns = max(1, self.width() // (self.max_width + 20))
+        if num_columns == self.current_columns and not force_update:
+            return  # 如果列数没有变化且不是强制更新，就不进行调整
+
+        # 更新当前列数
+        self.current_columns = num_columns
+
         # 临时禁用更新
         self.setUpdatesEnabled(False)
 
@@ -84,7 +93,6 @@ class ProjectUI(QWidget):
                 widget.setParent(None)
 
         # 根据窗口宽度计算每行可以放置的QFrame数量
-        num_columns = max(1, self.width() // (self.max_width + 20))
         for index, frame in enumerate(self.frames):
             row = index // num_columns
             col = index % num_columns
