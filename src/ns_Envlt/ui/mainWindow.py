@@ -65,7 +65,7 @@ class mainWindow(QWidget):
 
         self.dialog = envlt_messagebox.EnvltDialog()
 
-        # test
+        # 构建Project页面
         all_db = self.envlt_project_database.get_asset_libs_data("project_data")
         self.project_ui = project_ui.ProjectUI(all_db)
         self.envlt.stackedWidget.addWidget(self.project_ui)
@@ -92,9 +92,6 @@ class mainWindow(QWidget):
         if page == PageType.About:
             self.envlt.stackedWidget.setCurrentIndex(0)
         elif page == PageType.Project:
-            # self.envlt.stackedWidget.setCurrentIndex(1)
-
-            # test
 
             self.envlt.stackedWidget.setCurrentWidget(self.project_ui)
 

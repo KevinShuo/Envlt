@@ -1,3 +1,11 @@
+"""
+Project页面下的场景预览
+
+当前展示信息有：预览图，场景名称
+
+当前开发若要获取更多场景信息，单击项目可以在输出中查看到场景的具体资产信息
+
+"""
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
@@ -11,14 +19,13 @@ class ProjectUI(QWidget):
 
         self.max_width = 200
         self.max_height = 150
-        self.current_columns = -1  # 用于跟踪当前列数
+        self.current_columns = -1
 
         self.init_layout()
         self.add_frames(project_data)
-        self.resizeEvent = self.on_resize  # 绑定窗口调整事件
+        self.resizeEvent = self.on_resize
 
     def init_layout(self):
-        # 创建一个滚动区域
         self.scroll_area = QScrollArea(self)
         self.scroll_area.setStyleSheet("background-color: rgb(41, 46, 59);")
         self.scroll_area.setWidgetResizable(True)
@@ -31,7 +38,16 @@ class ProjectUI(QWidget):
         main_layout.addWidget(self.scroll_area)
         self.setLayout(main_layout)
 
-    def create_frame(self, image_path, scene_name):
+    def create_frame(self, image_path:str, scene_name:str):
+        """
+
+        批量创建project页面下的场景元素时所调用的函数，若要修改样式每个QFrame包含部件可以在这个函数中修改
+
+        :param image_path: 预览图路径
+        :param scene_name: 场景名称
+        :return:
+        """
+
         # 创建一个HoverableFrame
         card_frame = HoverableFrame()
         card_frame.setFrameShape(QFrame.Box)
@@ -94,15 +110,24 @@ class ProjectUI(QWidget):
         self.update_layout(force_update=True)  # 初始布局时强制更新
 
     def on_frame_clicked(self):
+        """
+        获取鼠标点击场景的具体信息
+
+        :return:
+        """
         sender = self.sender()
         label = sender.findChild(QLabel, "frameLabel")  # 根据对象名称查找QLabel
         if label:
             scene_name = label.text().split(":")[-1].strip()
-        scene_db = self.envlt_project_database.get_asset_libs_data(scene_name)
-        print(scene_db)
+            scene_db = self.envlt_project_database.get_asset_libs_data(scene_name)
+            print(scene_db)
 
 
+"""
 
+该模块主要用于设置QFrame样式和重写的方法
+
+"""
 class HoverableFrame(QFrame):
     clicked = Signal()  # 定义一个信号
 
