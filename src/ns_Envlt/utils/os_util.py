@@ -113,3 +113,15 @@ class QFileDialogUtil:
 
     def _a(self):
         pass
+
+
+def correct_path(paths: list) -> list:
+    """
+    将路径中的反斜杠替换为正斜杠
+
+    :param paths: 包含路径的列表
+    :return: 替换后的路径列表
+    """
+    if not paths:
+        raise AttributeError("传入paths 为None")
+    return [path.replace('\\', '/') for path in paths]
