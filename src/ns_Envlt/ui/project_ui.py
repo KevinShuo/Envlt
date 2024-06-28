@@ -15,9 +15,6 @@ class ProjectUI(QWidget):
         self.add_frames()
         self.resizeEvent = self.on_resize  # 绑定窗口调整事件
 
-    def init_widgets(self):
-        pass
-
     def init_layout(self):
         # 创建一个滚动区域
         self.scroll_area = QScrollArea(self)
@@ -46,44 +43,29 @@ class ProjectUI(QWidget):
         # 设置图片
         image = QLabel()
         pixmap = QPixmap(image_path)
-        scale_pixmap = pixmap.scaled(self.max_width, self.max_height, Qt.KeepAspectRatio)
+        scale_pixmap = pixmap.scaled(self.max_width, self.max_height, Qt.KeepAspectRatio)  # 缩小图片高度比例
         image.setPixmap(scale_pixmap)
         layout.addWidget(image)
 
         # 设置标签
         label = QLabel(text)
         label.setObjectName("frameLabel")  # 设置对象名称
-        label.setStyleSheet("font-size: 14px; font-weight: bold; color: #333; padding-top: 10px;")  # 设置文字样式
+        label.setStyleSheet("font-size: 14px; font-weight: bold; color: white; padding-top: 5px;")  # 设置文字样式
+        label.setAlignment(Qt.AlignCenter)
         layout.addWidget(label)
 
-        layout.setContentsMargins(10, 10, 10, 10)  # 设置内边距
+        layout.setContentsMargins(5, 5, 5, 5)  # 设置内边距
 
         return card_frame
-
-    def on_frame_clicked(self):
-        sender = self.sender()
-        label = sender.findChild(QLabel, "frameLabel")  # 根据对象名称查找QLabel
-        if label:
-            print(label.text())
-
-    def add_frames(self):
-        self.frames = []
-        for i in range(10):
-            frame = self.create_frame(r"C:/Users/zhuyihan/Desktop/1111.png", f"资产名称: 13Hang_BaiET_{i}")
-            self.frames.append(frame)
-        self.update_layout(force_update=True)  # 初始布局时强制更新
 
     def update_layout(self, force_update=False):
         # 计算每行可以放置的QFrame数量
         num_columns = max(1, self.width() // (self.max_width + 20))
         if num_columns == self.current_columns and not force_update:
-            return  # 如果列数没有变化且不是强制更新，就不进行调整
+            return
 
-        # 更新当前列数
+            # 更新当前列数
         self.current_columns = num_columns
-
-        # 临时禁用更新
-        self.setUpdatesEnabled(False)
 
         # 清除布局中的所有小部件
         for i in reversed(range(self.scroll_layout.count())):
@@ -98,12 +80,22 @@ class ProjectUI(QWidget):
             col = index % num_columns
             self.scroll_layout.addWidget(frame, row, col)
 
-        # 重新启用更新
-        self.setUpdatesEnabled(True)
-
     def on_resize(self, event):
         self.update_layout()
         super(ProjectUI, self).resizeEvent(event)
+
+    def add_frames(self):
+        self.frames = []
+        for i in range(10):
+            frame = self.create_frame(r"C:\Users\zhuyihan\Desktop\filelog需求.jpg", f"Scene: 13Hang_BaiET_{i}")
+            self.frames.append(frame)
+        self.update_layout(force_update=True)  # 初始布局时强制更新
+
+    def on_frame_clicked(self):
+        sender = self.sender()
+        label = sender.findChild(QLabel, "frameLabel")  # 根据对象名称查找QLabel
+        if label:
+            print(label.text())
 
 
 class HoverableFrame(QFrame):
@@ -111,16 +103,37 @@ class HoverableFrame(QFrame):
 
     def __init__(self, parent=None):
         super(HoverableFrame, self).__init__(parent)
-        self.setStyleSheet("QFrame { border: 1px solid #ccc; border-radius: 5px; background-color: white; }")
+        self.setStyleSheet("""
+            QFrame {
+                border: 1px solid #555;
+                border-radius: 8px;
+                background-color: #2d3341;
+            }
+            QFrame:hover {
+                border: 1px solid #fff;
+            }
+        """)
 
     def mousePressEvent(self, event):
         self.clicked.emit()  # 触发点击信号
         super(HoverableFrame, self).mousePressEvent(event)
 
     def enterEvent(self, event):
-        self.setStyleSheet("QFrame { border: 1px solid #999; border-radius: 5px; background-color: #f0f0f0; }")
+        self.setStyleSheet("""
+            QFrame {
+                border: 1px solid #cddced;
+                border-radius: 8px;
+                background-color: #2d3341;
+            }
+        """)
         super(HoverableFrame, self).enterEvent(event)
 
     def leaveEvent(self, event):
-        self.setStyleSheet("QFrame { border: 1px solid #ccc; border-radius: 5px; background-color: white; }")
+        self.setStyleSheet("""
+            QFrame {
+                border: 1px solid #555;
+                border-radius: 8px;
+                background-color: #2d3341;
+            }
+        """)
         super(HoverableFrame, self).leaveEvent(event)
