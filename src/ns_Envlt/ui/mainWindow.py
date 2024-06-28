@@ -61,11 +61,6 @@ class mainWindow(QWidget):
 
         self.dialog = envlt_messagebox.EnvltDialog()
 
-        from ns_Envlt.envlt_log import EnvLog, LogLevel
-
-        a = EnvLog(r"C:\dev\maya\Envlt\src\logs", "test")
-        a.write_log(LogLevel.DEBUG.name, "this is log test")
-
     def init_slot(self):
         """
             初始化信号
