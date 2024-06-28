@@ -2,13 +2,18 @@
 # @Time : 2024/6/24 12:54
 # @Author : Mr.wang
 # @Email : 204062518@qq.com
-# @File : file_util.py
+# @File : os_util.py
 # @Project : Envlt
 import traceback
-from typing import *
 import hashlib
 import os
 import shutil
+import json
+from typing import *
+from importlib import reload
+from ns_Envlt.temp_pkg import temp
+
+reload(temp)
 
 
 class UIResource:
@@ -44,25 +49,16 @@ class UIResource:
         """
         if not os.path.exists(src_img_path):
             raise OSError("Src image path is not exists")
+        # 获取原始图像的md5
+        with open(src_img_path, "rb") as src_file:
+            md5_src = hashlib.md5(src_file.read())
         image_path, image_name = os.path.split(src_img_path)
-        target_path = str(os.path.join(self.img_project_path, image_name).replace('\\', '/'))
+        n, p = os.path.splitext(image_name)
+        target_name = f"{md5_src.hexdigest()}{p}"
+        target_path = str(os.path.join(self.img_project_path, target_name).replace('\\', '/'))
         # 如果 服务器存在相同的图片，则比较俩个图片的md5，如果不相同重新拷贝
         if os.path.exists(target_path):
-            with open(src_img_path, "rb", encoding="utf-8") as src_file:
-                md5_src = hashlib.md5(src_file.read())
-
-            with open(target_path, "rb", encoding="utf-8") as target_file:
-                md5_target = hashlib.md5(target_file.read())
-            if md5_target == md5_src:
-                return target_path
-            else:
-                try:
-                    os.remove(target_file)
-                    shutil.copy2(src_img_path, target_file)
-                    return target_path
-                except Exception as e:
-                    print(traceback.format_exc())
-                    return False
+            return target_path
         else:
             try:
                 shutil.copy2(src_img_path, target_path)
@@ -89,3 +85,43 @@ class UIResource:
         if not os.path.exists(img_project_path):
             raise OSError("img project is not exists")
         return img_project_path
+
+
+class QFileDialogUtil:
+    def __init__(self):
+        """
+        Qt FileDialog 工具类
+        """
+        self.temp = temp.EnvltTemp("Envlt")
+
+    def write_last_choose_path(self, path: str):
+        """
+            记录QFileDialog最后选择的路径
+        """
+        path_dict = json.dumps({"path": os.path.dirname(path)})
+        self.temp.create_config_file("file_dialog_last_choose.json", path_dict)
+
+    def get_last_choose_path(self):
+        """
+            获取最后一次选择的路径
+        :return:
+        """
+        data = self.temp.read_config_file("file_dialog_last_choose.json")
+        if not data:
+            return
+        return data["path"]
+
+    def _a(self):
+        pass
+
+
+def correct_path(paths: list) -> list:
+    """
+    将路径中的反斜杠替换为正斜杠
+
+    :param paths: 包含路径的列表
+    :return: 替换后的路径列表
+    """
+    if not paths:
+        raise AttributeError("传入paths 为None")
+    return [path.replace('\\', '/') for path in paths]
