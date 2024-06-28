@@ -73,6 +73,9 @@ class ProjectUI(QWidget):
         self.update_layout()
 
     def update_layout(self):
+        # 临时禁用更新
+        self.setUpdatesEnabled(False)
+
         # 清除布局中的所有小部件
         for i in reversed(range(self.scroll_layout.count())):
             widget = self.scroll_layout.itemAt(i).widget()
@@ -86,6 +89,9 @@ class ProjectUI(QWidget):
             row = index // num_columns
             col = index % num_columns
             self.scroll_layout.addWidget(frame, row, col)
+
+        # 重新启用更新
+        self.setUpdatesEnabled(True)
 
     def on_resize(self, event):
         self.update_layout()
