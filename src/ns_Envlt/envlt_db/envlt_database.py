@@ -4,16 +4,16 @@
 # @Email : 204062518@qq.com
 # @File : envlt_database.py
 # @Project : Envlt
-from importlib import reload
 import os
 import sqlite3
+from importlib import reload
 from typing import *
-from ns_Envlt.error import database_error
+
 from ns_Envlt.data import database_data
+from ns_Envlt.error import database_error
 
 reload(database_error)
 reload(database_data)
-
 
 
 class EnvltProjectDatabase:
@@ -152,7 +152,9 @@ from project_data"""
         """
         # 获取场景里资产所有数据
         assets = []
-        if "project_data" in scene_name:
+        print(f"Received scene_name: {scene_name}")
+        if scene_name == "project_data":
+
             command_get_asset_lib = f"""SELECT * FROM {scene_name}"""
             c = self.conn.cursor()
             c.execute(command_get_asset_lib)
@@ -203,6 +205,29 @@ from project_data"""
             )
             c = self.conn.cursor()
             c.execute(command, data)
+        self.conn.commit()
+
+    def delete_data_from_project_data(self, scene_name: str):
+        """
+        从总表中删除场景的索引信息
+        :param scene_name: 场景名
+        :return:
+        """
+        command = f"""DELETE FROM project_data WHERE name = ?"""
+        c = self.conn.cursor()
+        c.execute(command, (scene_name,))
+        self.conn.commit()
+
+    def drop_table(self, scene_name: str):
+        """
+        删除场景表格
+        :param scene_name:场景名
+        :return:
+        """
+        table_name = scene_name + "_libs"
+        command = f"""DROP TABLE IF EXISTS {table_name}"""
+        c = self.conn.cursor()
+        c.execute(command)
         self.conn.commit()
 
     @property

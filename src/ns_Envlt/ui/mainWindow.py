@@ -8,18 +8,24 @@ import datetime
 import getpass
 import os
 from enum import Enum
+
 from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui, scene_lib
+
+from importlib import reload
+
+from PySide2.QtCore import Qt, Signal
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
+from maya.OpenMayaUI import MQtUtil_mainWindow
+from shiboken2 import wrapInstance
+
+
 from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import envlt_database
-from ns_Envlt.utils import os_util
-from ns_Envlt.error import database_error
 from ns_Envlt.envlt_log import log_factory
-from maya.OpenMayaUI import MQtUtil_mainWindow
-from PySide2.QtWidgets import *
-from PySide2.QtGui import *
-from PySide2.QtCore import Qt
-from shiboken2 import wrapInstance
-from importlib import reload
+from ns_Envlt.error import database_error
+from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui
+from ns_Envlt.utils import os_util
 
 reload(project_ui)
 reload(scene_lib)
@@ -39,12 +45,14 @@ class PageType(Enum):
 
 
 class mainWindow(QWidget):
+    project_refresh = Signal()
+
     def __init__(self):
         """
             Envlt mainWindow
         """
         super().__init__()
-
+        self.project_refresh.connect(self.refresh_project_page)
         # time
         self.now_time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         self.envlt = Envlt.Ui_mainWindows()
@@ -94,8 +102,21 @@ class mainWindow(QWidget):
         if page == PageType.About:
             self.envlt.stackedWidget.setCurrentIndex(0)
         elif page == PageType.Project:
-
+            self.refresh_project_page()
             self.envlt.stackedWidget.setCurrentWidget(self.project_ui)
+
+    def refresh_project_page(self):
+        """
+        用于对Project页面场景操作后的自动刷新界面
+        :return:
+        """
+        self.envlt_project_database = envlt_database.EnvltProjectDatabase()
+
+        all_db = self.envlt_project_database.get_asset_libs_data("project_data")
+        self.project_ui.add_frames(all_db)
+        self.project_ui.update_layout(force_update=True)
+
+        del self.envlt_project_database
 
     def create_new_scene_ui(self):
         """
@@ -103,6 +124,8 @@ class mainWindow(QWidget):
         Returns:
 
         """
+        self.envlt_project_database = envlt_database.EnvltProjectDatabase()
+
         from ns_Envlt.ui import create_new_scene
         reload(create_new_scene)
         self.create_scene_ui = create_new_scene.Ui_create_scene()
@@ -131,6 +154,37 @@ class mainWindow(QWidget):
         if all_name:
             self.create_scene_ui.comboBox_choose_project.addItems(all_name)
 
+        self.init_create_scene_check_label()
+
+    def init_create_scene_check_label(self):
+        """
+            创建新水平布局并插入原有布局实现重复场景名称检定提示
+        :return:
+        """
+        # 创建场景名输入检定
+        self.name_layout = QHBoxLayout()
+        self.create_scene_ui.lineEdit_name.setStyleSheet("border: 1px solid #ccc; padding-right: 80px;")
+        self.name_layout.addWidget(self.create_scene_ui.lineEdit_name)
+
+        self.duplicate_label = QLabel("名称重复", self.create_scene_ui.lineEdit_name)
+        self.duplicate_label.setStyleSheet("color: gray; font-size: 12px; opacity: 0.6;")
+        self.duplicate_label.setVisible(False)
+        self.name_layout.addWidget(self.duplicate_label)
+
+        self.create_scene_ui.formLayout.setLayout(0, QFormLayout.FieldRole, self.name_layout)
+
+        # 克隆场景名输入检定
+        self.name_layout_2 = QHBoxLayout()
+        self.create_scene_ui.lineEdit_name_2.setStyleSheet("border: 1px solid #ccc; padding-right: 80px;")
+        self.name_layout_2.addWidget(self.create_scene_ui.lineEdit_name_2)
+
+        self.duplicate_label_2 = QLabel("名称重复", self.create_scene_ui.lineEdit_name_2)
+        self.duplicate_label_2.setStyleSheet("color: gray; font-size: 12px; opacity: 0.6;")
+        self.duplicate_label_2.setVisible(False)
+        self.name_layout_2.addWidget(self.duplicate_label_2)
+
+        self.create_scene_ui.formLayout_2.setLayout(2, QFormLayout.FieldRole, self.name_layout_2)
+
     def init_create_scene_slot(self):
         """
             初始化创建场景的信号
@@ -141,6 +195,7 @@ class mainWindow(QWidget):
         self.create_scene_ui.radioButton_create.toggled.connect(self.switch_new_exists_page)
         self.create_scene_ui.pushButton_create.clicked.connect(self.create_scene)
         self.create_scene_ui.lineEdit_name.textEdited.connect(self.check_scene_exists)
+        self.create_scene_ui.lineEdit_name_2.textEdited.connect(self.check_scene_exists)
         self.widgetAction_choose_image.triggered.connect(self.choose_image)
         self.widgetAction_choose_image_2.triggered.connect(self.choose_image)
 
@@ -150,7 +205,24 @@ class mainWindow(QWidget):
         :param text:当前name文本框里的文本
         :return:
         """
-        print(text)
+        sender = self.sender()
+        all_scene_name = self.envlt_project_database.get_all_scene_name()
+        if sender == self.create_scene_ui.lineEdit_name:
+            if text in all_scene_name:
+                self.create_scene_ui.lineEdit_name.setStyleSheet("border: 1px solid red;")
+                self.duplicate_label.setText("名称重复")
+                self.duplicate_label.setVisible(True)
+            else:
+                self.create_scene_ui.lineEdit_name.setStyleSheet("")
+                self.duplicate_label.setVisible(False)
+        elif sender == self.create_scene_ui.lineEdit_name_2:
+            if text in all_scene_name:
+                self.create_scene_ui.lineEdit_name_2.setStyleSheet("border: 1px solid red;")
+                self.duplicate_label_2.setText("名称重复")
+                self.duplicate_label_2.setVisible(True)
+            else:
+                self.create_scene_ui.lineEdit_name_2.setStyleSheet("")
+                self.duplicate_label_2.setVisible(False)
 
     def create_scene(self):
         """
@@ -167,6 +239,8 @@ class mainWindow(QWidget):
             except database_error.SceneAssetNoDataError as e:
                 self.log.write_log(self.log.critical, "禁止拷贝空场景")
                 self.dialog.error("禁止拷贝空场景", str(e))
+
+        self.project_refresh.emit()
 
     def _create_new_scene(self):
         """
@@ -217,6 +291,8 @@ class mainWindow(QWidget):
             self.log.write_log(self.log.critical, "场景已经存在")
             self.dialog.error("错误", "场景已存在")
 
+        self.project_refresh.emit()
+
     def _clone_scene(self):
         """
             克隆一个场景
@@ -244,6 +320,8 @@ class mainWindow(QWidget):
         except database_error.SceneExistsError as e:
             self.log.write_log(self.log.critical, "场景已存在")
             self.dialog.error("错误", "场景已存在")
+
+        self.project_refresh.emit()
 
     def choose_image(self):
         file_dialog_util = os_util.QFileDialogUtil()
