@@ -39,6 +39,7 @@ class LogFactory:
         """
         self._log_dir_path = None
         self._logs_path_list = []
+        self.log_level = LogLevel
         if not check_log_file_name(log_name):
             raise log_error.LogFileNameError("日志文件名错误,请不要带后缀")
         if user_dir:
@@ -105,6 +106,30 @@ class LogFactory:
     @logs_path_list.setter
     def logs_path_list(self, value: list):
         self._logs_path_list = value
+
+    @property
+    def info(self):
+        return self.log_level.INFO
+
+    @property
+    def warn(self):
+        return self.log_level.WARN
+
+    @property
+    def error(self):
+        return self.log_level.ERROR
+
+    @property
+    def success(self):
+        return self.log_level.SUCCESS
+
+    @property
+    def critical(self):
+        return self.log_level.CRITICAL
+
+    @property
+    def debug(self):
+        return self.log_level.DEBUG
 
 
 class LogFileFactory:
