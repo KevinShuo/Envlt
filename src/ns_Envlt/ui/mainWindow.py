@@ -8,18 +8,20 @@ import datetime
 import getpass
 import os
 from enum import Enum
-from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui
+from importlib import reload
+
+from PySide2.QtCore import Qt, Signal
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
+from maya.OpenMayaUI import MQtUtil_mainWindow
+from shiboken2 import wrapInstance
+
 from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import envlt_database
-from ns_Envlt.utils import os_util
-from ns_Envlt.error import database_error
 from ns_Envlt.envlt_log import log_factory
-from maya.OpenMayaUI import MQtUtil_mainWindow
-from PySide2.QtWidgets import *
-from PySide2.QtGui import *
-from PySide2.QtCore import Qt, Signal
-from shiboken2 import wrapInstance
-from importlib import reload
+from ns_Envlt.error import database_error
+from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui
+from ns_Envlt.utils import os_util
 
 reload(project_ui)
 
@@ -39,8 +41,8 @@ class PageType(Enum):
 
 
 class mainWindow(QWidget):
-
     project_refresh = Signal()
+
     def __init__(self):
         """
             Envlt mainWindow
@@ -99,6 +101,10 @@ class mainWindow(QWidget):
             self.envlt.stackedWidget.setCurrentWidget(self.project_ui)
 
     def refresh_project_page(self):
+        """
+        用于对Project页面场景操作后的自动刷新界面
+        :return:
+        """
         self.envlt_project_database = envlt_database.EnvltProjectDatabase()
 
         all_db = self.envlt_project_database.get_asset_libs_data("project_data")
@@ -124,7 +130,6 @@ class mainWindow(QWidget):
         create_scene_widget.show()
         self.init_create_scene_ui()
         self.init_create_scene_slot()
-
 
     def init_create_scene_ui(self):
         # set image
@@ -233,6 +238,7 @@ class mainWindow(QWidget):
             self.dialog.error("错误", "场景已存在")
 
         self.project_refresh.emit()
+
     def _clone_scene(self):
         """
             克隆一个场景
@@ -260,7 +266,6 @@ class mainWindow(QWidget):
         except database_error.SceneExistsError as e:
             self.log.write_log(self.log.critical, "场景已存在")
             self.dialog.error("错误", "场景已存在")
-
 
         self.project_refresh.emit()
 

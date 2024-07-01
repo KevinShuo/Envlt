@@ -126,6 +126,10 @@ class ProjectUI(QWidget):
             print(scene_db)
 
     def on_frame_right_clicked(self):
+        """
+        触发右键信号，并触发对应操作
+        :return:
+        """
         sender = self.sender()
         label = sender.findChild(QLabel, "frameLabel")
         if label:
@@ -133,6 +137,12 @@ class ProjectUI(QWidget):
             self.show_context_menu(sender, scene_name)
 
     def show_context_menu(self, frame, scene_name):
+        """
+        显示右键上下文菜单
+        :param frame: 当前右键场景的QFrame，用于更新页面
+        :param scene_name: 场景名称,作为参数传进对应功能
+        :return:
+        """
         context_menu = QMenu(self)
         delete_action = context_menu.addAction("删除")
         # 添加更多的选项
@@ -145,9 +155,16 @@ class ProjectUI(QWidget):
         #     print(scene_name)
 
     def delete_scene(self, frame, scene_name):
+        """
+        删除场景
+        :param frame: 当前右键场景的QFrame，用于更新页面
+        :param scene_name: 场景名称,作为参数传进删除数据库信息函数
+        :return:
+        """
         # 在数据库中删除场景
         self.envlt_project_database.delete_data_from_project_data(scene_name)
         self.envlt_project_database.drop_table(scene_name)
+
         # 从布局中移除并删除 frame
         self.scroll_layout.removeWidget(frame)
         frame.setParent(None)
