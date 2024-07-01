@@ -151,7 +151,7 @@ from project_data"""
         # 获取场景里资产所有数据
         assets = []
         print(f"Received scene_name: {scene_name}")
-        if "project_data" in scene_name:
+        if  scene_name == "project_data":
             command_get_asset_lib = f"""SELECT * FROM {scene_name}"""
             c = self.conn.cursor()
             c.execute(command_get_asset_lib)
