@@ -9,6 +9,7 @@ Project页面下的场景预览
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
+
 from ns_Envlt.envlt_db import envlt_database
 
 class ProjectUI(QWidget):
@@ -38,10 +39,10 @@ class ProjectUI(QWidget):
         main_layout.addWidget(self.scroll_area)
         self.setLayout(main_layout)
 
-    def create_frame(self, image_path:str, scene_name:str):
+    def create_frame(self, image_path: str, scene_name: str):
         """
 
-        批量创建project页面下的场景元素时所调用的函数，若要修改样式每个QFrame包含部件可以在这个函数中修改
+        批量创建project页面下的场景元素时所调用的函数，若要修改每个QFrame包含部件可以在这个函数中修改
 
         :param image_path: 预览图路径
         :param scene_name: 场景名称
@@ -54,6 +55,7 @@ class ProjectUI(QWidget):
         card_frame.setFrameShadow(QFrame.Raised)
         card_frame.setFixedSize(self.max_width, self.max_height)  # 设置固定大小
         card_frame.clicked.connect(self.on_frame_clicked)  # 连接点击信号到槽函数
+        card_frame.rightClicked.connect(self.on_frame_right_clicked)
 
         # 设置布局
         layout = QVBoxLayout(card_frame)
@@ -123,6 +125,57 @@ class ProjectUI(QWidget):
             print(scene_db)
 
 
+    def on_frame_right_clicked(self):
+        """
+        触发右键信号，并触发对应操作
+        :return:
+        """
+
+        sender = self.sender()
+        label = sender.findChild(QLabel, "frameLabel")
+        if label:
+            scene_name = label.text().split(":")[-1].strip()
+            self.show_context_menu(sender, scene_name)
+
+
+    def show_context_menu(self, frame, scene_name):
+        """
+        显示右键上下文菜单
+        :param frame: 当前右键场景的QFrame，用于更新页面
+        :param scene_name: 场景名称,作为参数传进对应功能
+        :return:
+        """
+        context_menu = QMenu(self)
+        delete_action = context_menu.addAction("删除")
+        # 添加更多的选项
+        detail_action = context_menu.addAction("场景信息")
+
+        action = context_menu.exec_(QCursor.pos())
+        if action == delete_action:
+            self.delete_scene(frame, scene_name)
+        # elif action == detail_action:
+        #     print(scene_name)
+
+    def delete_scene(self, frame, scene_name):
+        """
+        删除场景
+        :param frame: 当前右键场景的QFrame，用于更新页面
+        :param scene_name: 场景名称,作为参数传进删除数据库信息函数
+        :return:
+        """
+        # 在数据库中删除场景
+        self.envlt_project_database.delete_data_from_project_data(scene_name)
+        self.envlt_project_database.drop_table(scene_name)
+
+        # 从布局中移除并删除 frame
+        self.scroll_layout.removeWidget(frame)
+        frame.setParent(None)
+        self.frames.remove(frame)
+        self.update_layout(force_update=True)
+
+        print(f"{scene_name} deleted")
+
+
 """
 
 该模块主要用于设置QFrame样式和重写的方法
@@ -130,6 +183,7 @@ class ProjectUI(QWidget):
 """
 class HoverableFrame(QFrame):
     clicked = Signal()  # 定义一个信号
+    rightClicked = Signal()
 
     def __init__(self, parent=None):
         super(HoverableFrame, self).__init__(parent)
@@ -145,7 +199,10 @@ class HoverableFrame(QFrame):
         """)
 
     def mousePressEvent(self, event):
-        self.clicked.emit()  # 触发点击信号
+        if event.button() == Qt.LeftButton:
+            self.clicked.emit()  # 触发左键点击信号
+        elif event.button() == Qt.RightButton:
+            self.rightClicked.emit()  # 触发右键点击信号
         super(HoverableFrame, self).mousePressEvent(event)
 
     def enterEvent(self, event):
