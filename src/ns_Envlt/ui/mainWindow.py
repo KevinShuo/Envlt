@@ -196,7 +196,7 @@ class mainWindow(QWidget):
 
     def check_scene_exists(self, text: str):
         """
-            实时检查场景是否存在数据库中，如果不存在则给与提示
+            实时检查场景是否存在数据库中，如果存在则给与提示
         :param text:当前name文本框里的文本
         :return:
         """
@@ -207,17 +207,25 @@ class mainWindow(QWidget):
                 self.create_scene_ui.lineEdit_name.setStyleSheet("border: 1px solid red;")
                 self.duplicate_label.setText("名称重复")
                 self.duplicate_label.setVisible(True)
+                self.create_scene_ui.pushButton_create.setEnabled(False)
+                self.create_scene_ui.pushButton_create.setStyleSheet("background-color: gray;")
             else:
                 self.create_scene_ui.lineEdit_name.setStyleSheet("")
                 self.duplicate_label.setVisible(False)
+                self.create_scene_ui.pushButton_create.setEnabled(True)
+                self.create_scene_ui.pushButton_create.setStyleSheet("")
         elif sender == self.create_scene_ui.lineEdit_name_2:
             if text in all_scene_name:
                 self.create_scene_ui.lineEdit_name_2.setStyleSheet("border: 1px solid red;")
                 self.duplicate_label_2.setText("名称重复")
                 self.duplicate_label_2.setVisible(True)
+                self.create_scene_ui.pushButton_create.setEnabled(False)
+                self.create_scene_ui.pushButton_create.setStyleSheet("background-color: gray;")
             else:
                 self.create_scene_ui.lineEdit_name_2.setStyleSheet("")
                 self.duplicate_label_2.setVisible(False)
+                self.create_scene_ui.pushButton_create.setEnabled(True)
+                self.create_scene_ui.pushButton_create.setStyleSheet("")
 
     def create_scene(self):
         """
