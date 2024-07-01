@@ -19,7 +19,6 @@ from PySide2.QtWidgets import *
 from maya.OpenMayaUI import MQtUtil_mainWindow
 from shiboken2 import wrapInstance
 
-
 from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import envlt_database
 from ns_Envlt.envlt_log import log_factory
@@ -159,6 +158,7 @@ class mainWindow(QWidget):
     def init_create_scene_check_label(self):
         """
             创建新水平布局并插入原有布局实现重复场景名称检定提示
+
         :return:
         """
         # 创建场景名输入检定
