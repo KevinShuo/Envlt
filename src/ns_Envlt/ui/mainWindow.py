@@ -22,6 +22,7 @@ from shiboken2 import wrapInstance
 from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import envlt_database
 from ns_Envlt.envlt_log import log_factory
+from ns_Envlt.config.json_config_factory import JsonConfigFactory
 from ns_Envlt.error import database_error
 from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui
 from ns_Envlt.utils import os_util
@@ -61,7 +62,7 @@ class mainWindow(QWidget):
         self.init_window()
         self.init_slot()
         self.log = log_factory.LogFactory("Envlt", True)
-        self.create_scene_lib_ui()
+        # self.create_scene_lib_ui()
         self.show()
 
     def init_window(self):
@@ -78,6 +79,15 @@ class mainWindow(QWidget):
         all_db = self.envlt_project_database.get_asset_libs_data("project_data")
         self.project_ui = project_ui.ProjectUI(all_db)
         self.envlt.stackedWidget.addWidget(self.project_ui)
+        # init check user
+        self.user = getpass.getuser()
+        blacklist_path = os.path.join(os.path.dirname(__file__), "../../config/blacklist.json")
+        json_factory = JsonConfigFactory(blacklist_path)
+        blacklist = json_factory.parser()["black_list"]
+        if self.user in blacklist:
+            self.dialog.warning("当前用户是封禁用户", "禁止用当前用户登录")
+            self.close()
+            raise AttributeError("封禁用户")
 
     def init_slot(self):
         """
@@ -285,10 +295,9 @@ class mainWindow(QWidget):
         description = self.create_scene_ui.textEdit_description.toPlainText()
 
         # user
-        user = getpass.getuser()
 
         scene_data = database_data.ProjectDbData(scene_name, image_server_path, description, self.now_time,
-                                                 self.now_time, user,
+                                                 self.now_time, self.user,
                                                  enable=True)
         try:
             self.envlt_project_database.create_new_scene(scene_data)
@@ -310,7 +319,6 @@ class mainWindow(QWidget):
         name_after_clone = self.create_scene_ui.lineEdit_name_2.text()
         image_after_clone = self.create_scene_ui.lineEdit_image_2.text()
         description_after_clone = self.create_scene_ui.textEdit_description_2.toPlainText()
-        user = getpass.getuser()
         # 获取原表的数据
         db = self.envlt_project_database.get_asset_libs_data(select_scene)
         if not db:
@@ -318,7 +326,7 @@ class mainWindow(QWidget):
         # 在总表里插入一行新的场景数据
         clone_scene_data = database_data.ProjectDbData(name_after_clone, image_after_clone, description_after_clone,
                                                        self.now_time,
-                                                       self.now_time, user, enable=True)
+                                                       self.now_time, self.user, enable=True)
         try:
             self.envlt_project_database.create_new_scene(clone_scene_data)
             self.envlt_project_database.create_new_asset_table(name_after_clone)
