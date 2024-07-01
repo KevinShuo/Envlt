@@ -196,7 +196,7 @@ class mainWindow(QWidget):
 
     def check_scene_exists(self, text: str):
         """
-            实时检查场景是否存在数据库中，如果存在则给与提示
+            实时检查场景是否存在数据库中，如果存在则给与提示并禁用创建按钮
         :param text:当前name文本框里的文本
         :return:
         """
