@@ -12,7 +12,6 @@ from PySide2.QtWidgets import *
 
 from ns_Envlt.envlt_db import envlt_database
 
-
 class ProjectUI(QWidget):
     def __init__(self, project_data):
         super(ProjectUI, self).__init__()
@@ -125,16 +124,19 @@ class ProjectUI(QWidget):
             scene_db = self.envlt_project_database.get_asset_libs_data(scene_name)
             print(scene_db)
 
+
     def on_frame_right_clicked(self):
         """
         触发右键信号，并触发对应操作
         :return:
         """
+
         sender = self.sender()
         label = sender.findChild(QLabel, "frameLabel")
         if label:
             scene_name = label.text().split(":")[-1].strip()
             self.show_context_menu(sender, scene_name)
+
 
     def show_context_menu(self, frame, scene_name):
         """
@@ -179,8 +181,6 @@ class ProjectUI(QWidget):
 该模块主要用于设置QFrame样式和重写的方法
 
 """
-
-
 class HoverableFrame(QFrame):
     clicked = Signal()  # 定义一个信号
     rightClicked = Signal()

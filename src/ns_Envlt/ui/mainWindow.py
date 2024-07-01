@@ -149,6 +149,37 @@ class mainWindow(QWidget):
         if all_name:
             self.create_scene_ui.comboBox_choose_project.addItems(all_name)
 
+        self.init_create_scene_check_label()
+
+    def init_create_scene_check_label(self):
+        """
+            创建新水平布局并插入原有布局实现重复场景名称检定提示
+        :return:
+        """
+        # 创建场景名输入检定
+        self.name_layout = QHBoxLayout()
+        self.create_scene_ui.lineEdit_name.setStyleSheet("border: 1px solid #ccc; padding-right: 80px;")
+        self.name_layout.addWidget(self.create_scene_ui.lineEdit_name)
+
+        self.duplicate_label = QLabel("名称重复", self.create_scene_ui.lineEdit_name)
+        self.duplicate_label.setStyleSheet("color: gray; font-size: 12px; opacity: 0.6;")
+        self.duplicate_label.setVisible(False)
+        self.name_layout.addWidget(self.duplicate_label)
+
+        self.create_scene_ui.formLayout.setLayout(0, QFormLayout.FieldRole, self.name_layout)
+
+        # 克隆场景名输入检定
+        self.name_layout_2 = QHBoxLayout()
+        self.create_scene_ui.lineEdit_name_2.setStyleSheet("border: 1px solid #ccc; padding-right: 80px;")
+        self.name_layout_2.addWidget(self.create_scene_ui.lineEdit_name_2)
+
+        self.duplicate_label_2 = QLabel("名称重复", self.create_scene_ui.lineEdit_name_2)
+        self.duplicate_label_2.setStyleSheet("color: gray; font-size: 12px; opacity: 0.6;")
+        self.duplicate_label_2.setVisible(False)
+        self.name_layout_2.addWidget(self.duplicate_label_2)
+
+        self.create_scene_ui.formLayout_2.setLayout(2, QFormLayout.FieldRole, self.name_layout_2)
+
     def init_create_scene_slot(self):
         """
             初始化创建场景的信号
@@ -159,6 +190,7 @@ class mainWindow(QWidget):
         self.create_scene_ui.radioButton_create.toggled.connect(self.switch_new_exists_page)
         self.create_scene_ui.pushButton_create.clicked.connect(self.create_scene)
         self.create_scene_ui.lineEdit_name.textEdited.connect(self.check_scene_exists)
+        self.create_scene_ui.lineEdit_name_2.textEdited.connect(self.check_scene_exists)
         self.widgetAction_choose_image.triggered.connect(self.choose_image)
         self.widgetAction_choose_image_2.triggered.connect(self.choose_image)
 
@@ -168,7 +200,24 @@ class mainWindow(QWidget):
         :param text:当前name文本框里的文本
         :return:
         """
-        print(text)
+        sender = self.sender()
+        all_scene_name = self.envlt_project_database.get_all_scene_name()
+        if sender == self.create_scene_ui.lineEdit_name:
+            if text in all_scene_name:
+                self.create_scene_ui.lineEdit_name.setStyleSheet("border: 1px solid red;")
+                self.duplicate_label.setText("名称重复")
+                self.duplicate_label.setVisible(True)
+            else:
+                self.create_scene_ui.lineEdit_name.setStyleSheet("")
+                self.duplicate_label.setVisible(False)
+        elif sender == self.create_scene_ui.lineEdit_name_2:
+            if text in all_scene_name:
+                self.create_scene_ui.lineEdit_name_2.setStyleSheet("border: 1px solid red;")
+                self.duplicate_label_2.setText("名称重复")
+                self.duplicate_label_2.setVisible(True)
+            else:
+                self.create_scene_ui.lineEdit_name_2.setStyleSheet("")
+                self.duplicate_label_2.setVisible(False)
 
     def create_scene(self):
         """

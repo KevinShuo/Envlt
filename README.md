@@ -17,6 +17,8 @@
    - [x] `ProjectUI` 类中新增 `on_frame_right_clicked`,`show_context_menu`, `delete_scene`.分别对应：触发右键信号，显示点击的frame对应的上下文菜单，场景删除操作
    - [x] `envlt_database.py`模块下新增`delete_data_from_project_data`,`drop_table`.用以实现删除总表索引和对应场景的表格
 - [x] `mainWindow.py`下新增`refresh_project_page`,用以实现在新建，克隆或删除场景后实时更新`project`页面。
+- [x] `mainWindow.py`下新增`init_create_scene_check_label`,并完成`check_scene_exists`。用于实现重复场景名提示
+
 
 ***
 
