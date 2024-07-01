@@ -16,6 +16,8 @@
     <file>md-radio-button-off.png</file>
   </qresource>
   <qresource prefix="common">
+    <file>note.png</file>
+    <file>User.png</file>
     <file>admin.png</file>
     <file>show-password .png</file>
     <file>safer .png</file>

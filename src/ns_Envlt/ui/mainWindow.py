@@ -8,7 +8,7 @@ import datetime
 import getpass
 import os
 from enum import Enum
-from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui
+from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui, scene_lib
 from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import envlt_database
 from ns_Envlt.utils import os_util
@@ -22,7 +22,7 @@ from shiboken2 import wrapInstance
 from importlib import reload
 
 reload(project_ui)
-
+reload(scene_lib)
 reload(os_util)
 reload(Envlt)
 reload(envlt_database)
@@ -54,6 +54,7 @@ class mainWindow(QWidget):
         self.init_window()
         self.init_slot()
         self.log = log_factory.LogFactory("Envlt", True)
+        self.create_scene_lib_ui()
         self.show()
 
     def init_window(self):
@@ -275,3 +276,12 @@ class mainWindow(QWidget):
             self.create_scene_ui.stackedWidget.setCurrentIndex(1)
         else:
             raise AttributeError("Has not support this page")
+
+    def create_scene_lib_ui(self):
+        from ns_Envlt.ui import scene_lib
+        reload(scene_lib)
+        self.widget_scene_lib = QWidget(self)
+        self.widget_scene_lib.setWindowFlags(Qt.Window)
+        _scene_lib = scene_lib.Ui_Form()
+        _scene_lib.setupUi(self.widget_scene_lib)
+        self.widget_scene_lib.show()
