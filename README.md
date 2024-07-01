@@ -8,6 +8,15 @@
 
 ### _wangshuo_  _zhuyihan_
 
+***
+
+### 2024/07/01
+
+- [x] `project_ui.py`模块下新增每个场景的右键上下文菜单，实现对已有场景的删除 _(测试阶段还未限制用户权限)_  
+   - [x] 修改`HoverableFrame`类，发出右键点击信号
+   - [x] `ProjectUI` 类中新增 `on_frame_right_clicked`,`show_context_menu`, `delete_scene`.分别对应：触发右键信号，显示点击的frame对应的上下文菜单，场景删除操作
+   - [x] `envlt_database.py`模块下新增`delete_data_from_project_data`,`drop_table`.用以实现删除总表索引和对应场景的表格
+- [x] `mainWindow.py`下新增`refresh_project_page`,用以实现在新建，克隆或删除场景后实时更新`project`页面。
 
 ***
 

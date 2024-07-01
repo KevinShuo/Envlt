@@ -155,7 +155,6 @@ from project_data"""
         print(f"Received scene_name: {scene_name}")
         if  scene_name == "project_data":
 
-
             command_get_asset_lib = f"""SELECT * FROM {scene_name}"""
             c = self.conn.cursor()
             c.execute(command_get_asset_lib)
@@ -208,6 +207,19 @@ from project_data"""
             c.execute(command, data)
         self.conn.commit()
 
+
+    def delete_data_from_project_data(self, scene_name: str):
+
+        command = f"""DELETE FROM project_data WHERE name = ?"""
+        c = self.conn.cursor()
+        c.execute(command, (scene_name,))
+        self.conn.commit()
+    def drop_table(self, scene_name: str):
+        table_name = scene_name + "_libs"
+        command = f"""DROP TABLE IF EXISTS {table_name}"""
+        c = self.conn.cursor()
+        c.execute(command)
+        self.conn.commit()
     @property
     def db_path(self) -> str:
         """
