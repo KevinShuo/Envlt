@@ -62,7 +62,7 @@ class mainWindow(QWidget):
         self.init_window()
         self.init_slot()
         self.log = log_factory.LogFactory("Envlt", True)
-        # self.create_scene_lib_ui()
+        self.create_scene_lib_ui()
         self.show()
 
     def init_window(self):

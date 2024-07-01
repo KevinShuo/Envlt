@@ -12,13 +12,30 @@
 
 ### 2024/07/01
 
-- [x] `project_ui.py`模块下新增每个场景的右键上下文菜单，实现对已有场景的删除 _(测试阶段还未限制用户权限)_  
-   - [x] 修改`HoverableFrame`类，发出右键点击信号
-   - [x] `ProjectUI` 类中新增 `on_frame_right_clicked`,`show_context_menu`, `delete_scene`.分别对应：触发右键信号，显示点击的frame对应的上下文菜单，场景删除操作
-   - [x] `envlt_database.py`模块下新增`delete_data_from_project_data`,`drop_table`.用以实现删除总表索引和对应场景的表格
+- [x] `project_ui.py`模块下新增每个场景的右键上下文菜单，实现对已有场景的删除 _(测试阶段还未限制用户权限)_
+    - [x] 修改`HoverableFrame`类，发出右键点击信号
+    - [x] `ProjectUI` 类中新增 `on_frame_right_clicked`,`show_context_menu`, `delete_scene`
+      .分别对应：触发右键信号，显示点击的frame对应的上下文菜单，场景删除操作
+    - [x] `envlt_database.py`模块下新增`delete_data_from_project_data`,`drop_table`.用以实现删除总表索引和对应场景的表格
 - [x] `mainWindow.py`下新增`refresh_project_page`,用以实现在新建，克隆或删除场景后实时更新`project`页面。
 - [x] `mainWindow.py`下新增`init_create_scene_check_label`,并完成`check_scene_exists`。用于实现重复场景名提示
 
+- [x] 添加config类 用来设置/读取配置项
+    - [x] json_config_factory
+
+```python
+# 读取配置
+import os
+from ns_Envlt.config.json_config_factory import JsonConfigFactory
+
+blacklist_path = os.path.join(os.path.dirname(__file__), "../../config/blacklist.json")
+json_factory = JsonConfigFactory(blacklist_path)
+json_data = json_factory.parser()
+```
+
+- [x] 设置scene libs ui界面
+
+<img src="resources/scene_lib.png" width=300px>
 
 ***
 
