@@ -8,11 +8,12 @@ import datetime
 import getpass
 import os
 from enum import Enum
-from ns_Envlt.ui import Envlt, envlt_messagebox,project_ui
+from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui
 from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import envlt_database
 from ns_Envlt.utils import os_util
 from ns_Envlt.error import database_error
+from ns_Envlt.envlt_log import log_factory
 from maya.OpenMayaUI import MQtUtil_mainWindow
 from PySide2.QtWidgets import *
 from PySide2.QtGui import *
@@ -20,14 +21,13 @@ from PySide2.QtCore import Qt
 from shiboken2 import wrapInstance
 from importlib import reload
 
-
-
 reload(project_ui)
 
 reload(os_util)
 reload(Envlt)
 reload(envlt_database)
 reload(envlt_messagebox)
+reload(log_factory)
 
 
 class PageType(Enum):
@@ -53,6 +53,7 @@ class mainWindow(QWidget):
         self.setWindowFlags(Qt.Window)
         self.init_window()
         self.init_slot()
+        self.log = log_factory.LogFactory("Envlt", True)
         self.show()
 
     def init_window(self):
@@ -138,8 +139,17 @@ class mainWindow(QWidget):
         """
         self.create_scene_ui.radioButton_create.toggled.connect(self.switch_new_exists_page)
         self.create_scene_ui.pushButton_create.clicked.connect(self.create_scene)
+        self.create_scene_ui.lineEdit_name.textEdited.connect(self.check_scene_exists)
         self.widgetAction_choose_image.triggered.connect(self.choose_image)
         self.widgetAction_choose_image_2.triggered.connect(self.choose_image)
+
+    def check_scene_exists(self, text: str):
+        """
+            实时检查场景是否存在数据库中，如果不存在则给与提示
+        :param text:当前name文本框里的文本
+        :return:
+        """
+        print(text)
 
     def create_scene(self):
         """
@@ -154,6 +164,7 @@ class mainWindow(QWidget):
             try:
                 self._clone_scene()
             except database_error.SceneAssetNoDataError as e:
+                self.log.write_log(self.log.critical, "禁止拷贝空场景")
                 self.dialog.error("禁止拷贝空场景", str(e))
 
     def _create_new_scene(self):
@@ -202,6 +213,7 @@ class mainWindow(QWidget):
             self.dialog.information("创建成功", f"创建{scene_name}场景 成功")
             del self.envlt_project_database
         except database_error.SceneExistsError as e:
+            self.log.write_log(self.log.critical, "场景已经存在")
             self.dialog.error("错误", "场景已存在")
 
     def _clone_scene(self):
@@ -229,11 +241,10 @@ class mainWindow(QWidget):
             self.dialog.information("创建成功", f"创建{name_after_clone}场景 成功")
             del self.envlt_project_database
         except database_error.SceneExistsError as e:
+            self.log.write_log(self.log.critical, "场景已存在")
             self.dialog.error("错误", "场景已存在")
 
-
     def choose_image(self):
-
         file_dialog_util = os_util.QFileDialogUtil()
         last_path = file_dialog_util.get_last_choose_path()
         # file_path, _ = QFileDialog.getOpenFileName(self, "请选择一个图片", "c:/" if not last_path else last_path)
