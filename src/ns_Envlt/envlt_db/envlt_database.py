@@ -152,7 +152,7 @@ from project_data"""
         """
         # 获取场景里资产所有数据
         assets = []
-        # print(f"Received scene_name: {scene_name}")
+
         if scene_name == "project_data":
 
             command_get_asset_lib = f"""SELECT * FROM {scene_name}"""
@@ -191,7 +191,7 @@ from project_data"""
         table_name = scene_name + "_libs"
         command = f"""INSERT INTO {table_name} (name, path, asset_type, tab_type, image, description, labels, enable)
         values (?, ?, ?, ?, ?, ?, ?,?)"""
-        # print(command)
+
         for asset in origin_data:
             data = (
                 asset.name,
