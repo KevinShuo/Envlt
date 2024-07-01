@@ -16,7 +16,7 @@ from ns_Envlt.error import database_error
 from maya.OpenMayaUI import MQtUtil_mainWindow
 from PySide2.QtWidgets import *
 from PySide2.QtGui import *
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, Signal
 from shiboken2 import wrapInstance
 from importlib import reload
 
@@ -39,12 +39,14 @@ class PageType(Enum):
 
 
 class mainWindow(QWidget):
+
+    project_refresh = Signal()
     def __init__(self):
         """
             Envlt mainWindow
         """
         super().__init__()
-
+        self.project_refresh.connect(self.refresh_project_page)
         # time
         self.now_time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         self.envlt = Envlt.Ui_mainWindows()
@@ -92,8 +94,17 @@ class mainWindow(QWidget):
         if page == PageType.About:
             self.envlt.stackedWidget.setCurrentIndex(0)
         elif page == PageType.Project:
-
+            self.refresh_project_page()
             self.envlt.stackedWidget.setCurrentWidget(self.project_ui)
+
+    def refresh_project_page(self):
+        self.envlt_project_database = envlt_database.EnvltProjectDatabase()
+
+        all_db = self.envlt_project_database.get_asset_libs_data("project_data")
+        self.project_ui.add_frames(all_db)
+        self.project_ui.update_layout(force_update=True)
+
+        del self.envlt_project_database
 
     def create_new_scene_ui(self):
         """
@@ -101,6 +112,8 @@ class mainWindow(QWidget):
         Returns:
 
         """
+        self.envlt_project_database = envlt_database.EnvltProjectDatabase()
+
         from ns_Envlt.ui import create_new_scene
         reload(create_new_scene)
         self.create_scene_ui = create_new_scene.Ui_create_scene()
@@ -110,6 +123,7 @@ class mainWindow(QWidget):
         create_scene_widget.show()
         self.init_create_scene_ui()
         self.init_create_scene_slot()
+
 
     def init_create_scene_ui(self):
         # set image
@@ -155,6 +169,8 @@ class mainWindow(QWidget):
                 self._clone_scene()
             except database_error.SceneAssetNoDataError as e:
                 self.dialog.error("禁止拷贝空场景", str(e))
+
+        self.project_refresh.emit()
 
     def _create_new_scene(self):
         """
@@ -204,6 +220,7 @@ class mainWindow(QWidget):
         except database_error.SceneExistsError as e:
             self.dialog.error("错误", "场景已存在")
 
+        self.project_refresh.emit()
     def _clone_scene(self):
         """
             克隆一个场景
@@ -231,6 +248,7 @@ class mainWindow(QWidget):
         except database_error.SceneExistsError as e:
             self.dialog.error("错误", "场景已存在")
 
+        self.project_refresh.emit()
 
     def choose_image(self):
 

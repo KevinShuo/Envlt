@@ -41,7 +41,7 @@ class ProjectUI(QWidget):
     def create_frame(self, image_path:str, scene_name:str):
         """
 
-        批量创建project页面下的场景元素时所调用的函数，若要修改样式每个QFrame包含部件可以在这个函数中修改
+        批量创建project页面下的场景元素时所调用的函数，若要修改每个QFrame包含部件可以在这个函数中修改
 
         :param image_path: 预览图路径
         :param scene_name: 场景名称
