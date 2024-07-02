@@ -326,7 +326,8 @@ class mainWindow(QWidget):
         if not db:
             raise database_error.SceneAssetNoDataError("原始场景里没有数据,禁止克隆空的场景。")
         # 在总表里插入一行新的场景数据
-        clone_scene_data = database_data.ProjectDbData(name_after_clone, image_after_clone, description_after_clone,
+        clone_scene_data = database_data.ProjectDbData(None, name_after_clone, image_after_clone,
+                                                       description_after_clone,
                                                        self.now_time,
                                                        self.now_time, self.user, enable=True)
         try:
