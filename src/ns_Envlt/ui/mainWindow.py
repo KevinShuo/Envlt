@@ -9,8 +9,6 @@ import getpass
 import os
 from enum import Enum
 
-from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui, scene_lib
-
 from importlib import reload
 
 from PySide2.QtCore import Qt, Signal
@@ -20,20 +18,21 @@ from maya.OpenMayaUI import MQtUtil_mainWindow
 from shiboken2 import wrapInstance
 
 from ns_Envlt.data import database_data
-from ns_Envlt.envlt_db import envlt_database
+from ns_Envlt.envlt_db import master_db, asset_db
 from ns_Envlt.envlt_log import log_factory
 from ns_Envlt.config.json_config_factory import JsonConfigFactory
 from ns_Envlt.error import database_error
-from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui
+from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui, scene_lib
 from ns_Envlt.utils import os_util
 
 reload(project_ui)
 reload(scene_lib)
 reload(os_util)
 reload(Envlt)
-reload(envlt_database)
+reload(master_db)
 reload(envlt_messagebox)
 reload(log_factory)
+reload(asset_db)
 
 
 class PageType(Enum):
@@ -71,12 +70,12 @@ class mainWindow(QWidget):
         """
         self.envlt.stackedWidget.setCurrentIndex(0)
         # init project database
-        self.envlt_project_database = envlt_database.EnvltProjectDatabase()
-
+        self.db_project = master_db.EnvltProjectDatabase()
+        self.db_assets = asset_db.EnvltAssetDB()
         self.dialog = envlt_messagebox.EnvltDialog()
 
         # 构建Project页面
-        all_db = self.envlt_project_database.get_asset_libs_data("project_data")
+        all_db = self.db_assets.get_asset_libs_data("project_data")
         self.project_ui = project_ui.ProjectUI(all_db)
         self.envlt.stackedWidget.addWidget(self.project_ui)
         # init check user
@@ -119,13 +118,12 @@ class mainWindow(QWidget):
         用于对Project页面场景操作后的自动刷新界面
         :return:
         """
-        self.envlt_project_database = envlt_database.EnvltProjectDatabase()
-
-        all_db = self.envlt_project_database.get_asset_libs_data("project_data")
+        self.db_project = master_db.EnvltProjectDatabase()
+        all_db = self.db_assets.get_asset_libs_data("project_data")
         self.project_ui.add_frames(all_db)
         self.project_ui.update_layout(force_update=True)
 
-        del self.envlt_project_database
+        del self.db_project
 
     def create_new_scene_ui(self):
         """
@@ -133,7 +131,7 @@ class mainWindow(QWidget):
         Returns:
 
         """
-        self.envlt_project_database = envlt_database.EnvltProjectDatabase()
+        self.db_project = master_db.EnvltProjectDatabase()
 
         from ns_Envlt.ui import create_new_scene
         reload(create_new_scene)
@@ -159,7 +157,7 @@ class mainWindow(QWidget):
         self.widgetAction_choose_image_2.setIcon(QIcon(select_image_icon))
         self.create_scene_ui.lineEdit_image_2.addAction(self.widgetAction_choose_image_2, QLineEdit.TrailingPosition)
         # get scene name
-        all_name = self.envlt_project_database.get_all_scene_name()
+        all_name = self.db_project.get_all_scene_name()
         if all_name:
             self.create_scene_ui.comboBox_choose_project.addItems(all_name)
 
@@ -209,7 +207,6 @@ class mainWindow(QWidget):
         self.widgetAction_choose_image.triggered.connect(self.choose_image)
         self.widgetAction_choose_image_2.triggered.connect(self.choose_image)
 
-
     def check_scene_exists(self, text: str):
         """
             实时检查场景是否存在数据库中，如果存在则给与提示并禁用创建按钮
@@ -217,7 +214,7 @@ class mainWindow(QWidget):
         :return:
         """
         sender = self.sender()
-        all_scene_name = self.envlt_project_database.get_all_scene_name()
+        all_scene_name = self.db_project.get_all_scene_name()
         if sender == self.create_scene_ui.lineEdit_name:
             if text in all_scene_name:
                 self.create_scene_ui.lineEdit_name.setStyleSheet("border: 1px solid red;")
@@ -301,10 +298,10 @@ class mainWindow(QWidget):
                                                  self.now_time, self.user,
                                                  enable=True)
         try:
-            self.envlt_project_database.create_new_scene(scene_data)
-            self.envlt_project_database.create_new_asset_table(scene_name)
+            self.db_project.create_new_scene(scene_data)
+            self.db_assets.create_new_asset_table(scene_name)
             self.dialog.information("创建成功", f"创建{scene_name}场景 成功")
-            del self.envlt_project_database
+            del self.db_project
         except database_error.SceneExistsError as e:
             self.log.write_log(self.log.critical, "场景已经存在")
             self.dialog.error("错误", "场景已存在")
@@ -321,7 +318,7 @@ class mainWindow(QWidget):
         image_after_clone = self.create_scene_ui.lineEdit_image_2.text()
         description_after_clone = self.create_scene_ui.textEdit_description_2.toPlainText()
         # 获取原表的数据
-        db = self.envlt_project_database.get_asset_libs_data(select_scene)
+        db = self.db_assets.get_asset_libs_data(select_scene)
         if not db:
             raise database_error.SceneAssetNoDataError("原始场景里没有数据,禁止克隆空的场景。")
         # 在总表里插入一行新的场景数据
@@ -329,11 +326,11 @@ class mainWindow(QWidget):
                                                        self.now_time,
                                                        self.now_time, self.user, enable=True)
         try:
-            self.envlt_project_database.create_new_scene(clone_scene_data)
-            self.envlt_project_database.create_new_asset_table(name_after_clone)
-            self.envlt_project_database.insert_data_to_table(db, name_after_clone)
+            self.db_project.create_new_scene(clone_scene_data)
+            self.db_assets.create_new_asset_table(name_after_clone)
+            self.db_project.insert_data_to_table(db, name_after_clone)
             self.dialog.information("创建成功", f"创建{name_after_clone}场景 成功")
-            del self.envlt_project_database
+            del self.db_project
         except database_error.SceneExistsError as e:
             self.log.write_log(self.log.critical, "场景已存在")
             self.dialog.error("错误", "场景已存在")
