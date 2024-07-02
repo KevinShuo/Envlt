@@ -6,16 +6,19 @@ Project页面下的场景预览
 当前开发若要获取更多场景信息，单击项目可以在输出中查看到场景的具体资产信息
 
 """
+import os
+from importlib import reload
+
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-from ns_Envlt.envlt_db import master_db,asset_db
-from ns_Envlt.utils import override_function
-from importlib import reload
 
-import os
+from ns_Envlt.envlt_db import master_db, asset_db
+from ns_Envlt.utils import override_function
 
 reload(override_function)
+reload(master_db)
+reload(asset_db)
 
 
 class ProjectUI(QWidget):
@@ -23,7 +26,7 @@ class ProjectUI(QWidget):
         super(ProjectUI, self).__init__()
 
         self.db_projects = master_db.EnvltProjectDatabase()
-        self.db_assets =asset_db.EnvltAssetDB()
+        self.db_assets = asset_db.EnvltAssetDB()
 
         self.max_width = 200
         self.max_height = 150

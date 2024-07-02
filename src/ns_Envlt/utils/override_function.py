@@ -10,6 +10,7 @@ from PySide2.QtWidgets import *
 
 """
 HoverableFrame为重写QFrame方法，可以触发对应的点击信号。
+
 """
 class HoverableFrame(QFrame):
     clicked = Signal()  # 定义一个信号
