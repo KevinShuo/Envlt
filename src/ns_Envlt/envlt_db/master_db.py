@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-import os
-import sqlite3
+import dataclasses
 from importlib import reload
 from typing import *
 
@@ -42,9 +41,7 @@ class EnvltProjectDatabase(base_db.EnvltBaseDB):
         rt_data = self.get_global_scene_data(scene_name=project_data.scene_name)
         if rt_data:
             raise database_error.SceneExistsError("场景已存在")
-        insert_data = (
-            project_data.scene_name, project_data.image_path, project_data.description, project_data.create_date,
-            project_data.modify_date, project_data.create_user, project_data.enable)
+        insert_data = dataclasses.astuple(project_data)[1:]
         self.insert_table(table_name="project_data", table_column=self.db_master_column, value=insert_data)
 
     def get_all_scene_name(self) -> Optional[List[str]]:
@@ -86,8 +83,7 @@ from project_data"""
             data = c.fetchone()
             if not data:
                 return
-            _id, name, image, description, create_date, modify_date, create_user, enable = data
-            data = database_data.ProjectDbData(name, image, description, create_date, modify_date, create_user, enable)
+            data = database_data.ProjectDbData(*data)
             return data
         # 多数查询
         elif isinstance(scene_name, list):
@@ -101,9 +97,7 @@ from project_data"""
                 if not data:
                     has_not_list.append(database_data.NoExistsData(name))
                     continue
-                _id, name, image, description, create_date, modify_date, create_user, enable = data
-                data = database_data.ProjectDbData(name, image, description, create_date, modify_date, create_user,
-                                                   enable)
+                data = database_data.ProjectDbData(*data)
                 rt_data.append(data)
             return rt_data, has_not_list
         else:

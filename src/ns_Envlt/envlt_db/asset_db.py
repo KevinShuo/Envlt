@@ -1,3 +1,4 @@
+import dataclasses
 from importlib import reload
 from typing import *
 from ..data import database_data
@@ -51,49 +52,23 @@ class EnvltAssetDB(base_db.EnvltBaseDB):
         assets = []
 
         if scene_name == "project_data":
-            command_get_asset_lib = f"""SELECT * FROM {scene_name}"""
-            c = self.conn.cursor()
-            c.execute(command_get_asset_lib)
-            datas = c.fetchall()
-            if not datas:
-                return
-            for data in datas:
-                _id, name, image, description, creat_date, modify_date, creat_user, enable = data
-                asset_data = database_data.ProjectDbData(name, image, description, creat_date, modify_date, creat_user,
-                                                         enable)
-                assets.append(asset_data)
+            assets = self.get_all_data_from_table(table_name="project_data",
+                                                  insert_dataclass=database_data.ProjectDbData)
         else:
-            command_get_asset_lib = f"""SELECT * FROM {scene_name}_libs"""
-            c = self.conn.cursor()
-            c.execute(command_get_asset_lib)
-            datas = c.fetchall()
-            if not datas:
-                return
-            for data in datas:
-                _id, name, path, asset_type, tab_type, image, description, labels, enable = data
-                asset_data = database_data.AssetDbData(_id, name, path, asset_type, tab_type, image, description,
-                                                       labels,
-                                                       enable)
-                assets.append(asset_data)
+            table_lib_name = f"{scene_name}_libs"
+            assets = self.get_all_data_from_table(table_name=table_lib_name,
+                                                  insert_dataclass=database_data.AssetDbData)
         return assets
 
     def insert_data_to_table(self, origin_data: List[database_data.AssetDbData], scene_name: str):
         """
         往表中插入数据
+
         :param origin_data:从表中获取的数据，类型为list
         :param scene_name:总表中的场景名称
         :return:
         """
         table_name = scene_name + "_libs"
         for asset in origin_data:
-            data = (
-                asset.name,
-                asset.path,
-                asset.asset_type,
-                asset.tab_type,
-                asset.image,
-                asset.description,
-                asset.labels,
-                asset.enable
-            )
+            data = dataclasses.astuple(asset)[1:]
             self.insert_table(table_name, table_column=self.db_asset_column, value=data)
