@@ -161,10 +161,14 @@ class ProjectUI(QWidget):
 
     def add_frames(self, project_data):
         self.frames = []
-        for i in project_data:
-            frame = self.create_frame(eval(i.image_data), f"Scene: {i.scene_name} ")
-            self.frames.append(frame)
-        self.update_layout(force_update=True)  # 初始布局时强制更新
+        if project_data:
+            for i in project_data:
+                frame = self.create_frame(eval(i.image_data), f"Scene: {i.scene_name} ")
+                self.frames.append(frame)
+            self.update_layout(force_update=True)  # 初始布局时强制更新
+        else:
+            pass
+
 
     def on_frame_clicked(self):
         """
@@ -223,7 +227,7 @@ class ProjectUI(QWidget):
         :return:
         """
         # 在数据库中删除场景
-        self.db_assets.delete_data_from_project_data(scene_name)
+        self.db_projects.delete_data_from_project_data(scene_name)
         self.db_assets.drop_table(scene_name)
 
         # 从布局中移除并删除 frame

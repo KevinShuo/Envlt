@@ -219,31 +219,33 @@ class mainWindow(QWidget):
         self.db_project = master_db.EnvltProjectDatabase()
         sender = self.sender()
         all_scene_name = self.db_project.get_all_scene_name()
-        if sender == self.create_scene_ui.lineEdit_name:
-            if text in all_scene_name:
-                self.create_scene_ui.lineEdit_name.setStyleSheet("border: 1px solid red;")
-                self.duplicate_label.setText("名称重复")
-                self.duplicate_label.setVisible(True)
-                self.create_scene_ui.pushButton_create.setEnabled(False)
-                self.create_scene_ui.pushButton_create.setStyleSheet("background-color: gray;")
-            else:
-                self.create_scene_ui.lineEdit_name.setStyleSheet("")
-                self.duplicate_label.setVisible(False)
-                self.create_scene_ui.pushButton_create.setEnabled(True)
-                self.create_scene_ui.pushButton_create.setStyleSheet("")
-        elif sender == self.create_scene_ui.lineEdit_name_2:
-            if text in all_scene_name:
-                self.create_scene_ui.lineEdit_name_2.setStyleSheet("border: 1px solid red;")
-                self.duplicate_label_2.setText("名称重复")
-                self.duplicate_label_2.setVisible(True)
-                self.create_scene_ui.pushButton_create.setEnabled(False)
-                self.create_scene_ui.pushButton_create.setStyleSheet("background-color: gray;")
-            else:
-                self.create_scene_ui.lineEdit_name_2.setStyleSheet("")
-                self.duplicate_label_2.setVisible(False)
-                self.create_scene_ui.pushButton_create.setEnabled(True)
-                self.create_scene_ui.pushButton_create.setStyleSheet("")
-
+        if all_scene_name:
+            if sender == self.create_scene_ui.lineEdit_name:
+                if text in all_scene_name:
+                    self.create_scene_ui.lineEdit_name.setStyleSheet("border: 1px solid red;")
+                    self.duplicate_label.setText("名称重复")
+                    self.duplicate_label.setVisible(True)
+                    self.create_scene_ui.pushButton_create.setEnabled(False)
+                    self.create_scene_ui.pushButton_create.setStyleSheet("background-color: gray;")
+                else:
+                    self.create_scene_ui.lineEdit_name.setStyleSheet("")
+                    self.duplicate_label.setVisible(False)
+                    self.create_scene_ui.pushButton_create.setEnabled(True)
+                    self.create_scene_ui.pushButton_create.setStyleSheet("")
+            elif sender == self.create_scene_ui.lineEdit_name_2:
+                if text in all_scene_name:
+                    self.create_scene_ui.lineEdit_name_2.setStyleSheet("border: 1px solid red;")
+                    self.duplicate_label_2.setText("名称重复")
+                    self.duplicate_label_2.setVisible(True)
+                    self.create_scene_ui.pushButton_create.setEnabled(False)
+                    self.create_scene_ui.pushButton_create.setStyleSheet("background-color: gray;")
+                else:
+                    self.create_scene_ui.lineEdit_name_2.setStyleSheet("")
+                    self.duplicate_label_2.setVisible(False)
+                    self.create_scene_ui.pushButton_create.setEnabled(True)
+                    self.create_scene_ui.pushButton_create.setStyleSheet("")
+        else:
+            pass
     def create_scene(self):
         """
             创建一个新的场景
