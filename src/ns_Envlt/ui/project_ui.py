@@ -15,10 +15,12 @@ from PySide2.QtWidgets import *
 
 from ns_Envlt.envlt_db import master_db, asset_db
 from ns_Envlt.utils import override_function
+from . import image_window
 
 reload(override_function)
 reload(master_db)
 reload(asset_db)
+reload(image_window)
 
 
 class ProjectUI(QWidget):
@@ -89,12 +91,12 @@ class ProjectUI(QWidget):
         filtered_data = [d for d in all_db if search_text in d.scene_name]
         self.add_frames(filtered_data)
 
-    def create_frame(self, image_path: str, scene_name: str):
+    def create_frame(self, image_data: str, scene_name: str):
         """
 
         批量创建project页面下的场景元素时所调用的函数，若要修改每个QFrame包含部件可以在这个函数中修改
 
-        :param image_path: 预览图路径
+        :param image_data: 预览图路径
         :param scene_name: 场景名称
         :return:
         """
@@ -112,7 +114,9 @@ class ProjectUI(QWidget):
 
         # 设置图片
         image = QLabel()
-        pixmap = QPixmap(image_path)
+        pixmap = QPixmap()
+        d = QByteArray(image_data)
+        pixmap.loadFromData(d)
         scale_pixmap = pixmap.scaled(self.max_width, self.max_height, Qt.KeepAspectRatio)  # 缩小图片高度比例
         image.setPixmap(scale_pixmap)
         image.setAlignment(Qt.AlignCenter)
@@ -158,7 +162,7 @@ class ProjectUI(QWidget):
     def add_frames(self, project_data):
         self.frames = []
         for i in project_data:
-            frame = self.create_frame(i.image_path, f"Scene: {i.scene_name} ")
+            frame = self.create_frame(eval(i.image_data), f"Scene: {i.scene_name} ")
             self.frames.append(frame)
         self.update_layout(force_update=True)  # 初始布局时强制更新
 
@@ -233,7 +237,8 @@ class ProjectUI(QWidget):
     def open_image(self, scene_name):
         all_db = self.db_assets.get_asset_libs_data("project_data")
         scene_data = next((d for d in all_db if d.scene_name == scene_name), None)
-        if scene_data and os.path.exists(scene_data.image_path):
-            QDesktopServices.openUrl(QUrl.fromLocalFile(scene_data.image_path))
+        if scene_data:
+            a = image_window.ImageWindow(eval(scene_data.image_data))
+            a.exec_()
         else:
             QMessageBox.warning(self, "Error", "Image not found or path is incorrect.")

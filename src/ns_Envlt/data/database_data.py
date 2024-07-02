@@ -19,7 +19,7 @@ class ProjectDbData:
     """
     _id: Optional[str]
     scene_name: str
-    image_path: Optional[str]
+    image_data: Optional[str]
     description: Optional[str]
     create_date: str
     modify_date: str
@@ -31,7 +31,6 @@ class ProjectDbData:
             f"======== ProjectDbData ========\n"
             f"ID: {self._id}\n"
             f"scene_name: {self.scene_name}\n"
-            f"image_path: {self.image_path}\n"
             f"description: {self.description}\n"
             f"create_date: {self.create_date}\n"
             f"modify_date: {self.modify_date}\n"
@@ -44,7 +43,7 @@ class ProjectDbData:
         if isinstance(other, ProjectDbData):
             return (self._id == other._id and
                     self.scene_name == other.scene_name and
-                    self.image_path == other.image_path and
+                    self.image_data == other.image_data and
                     self.description == other.description and
                     self.create_date == other.create_date and
                     self.modify_date == other.modify_date and
@@ -54,7 +53,7 @@ class ProjectDbData:
 
     def __hash__(self):
         return hash(
-            (self.scene_name, self.image_path, self.description, self.create_date, self.modify_date, self.create_user,
+            (self.scene_name, self.image_data, self.description, self.create_date, self.modify_date, self.create_user,
              self.enable))
 
 
