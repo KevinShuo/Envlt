@@ -9,7 +9,7 @@ Project页面下的场景预览
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-from ns_Envlt.envlt_db import master_db
+from ns_Envlt.envlt_db import master_db,asset_db
 from ns_Envlt.utils import override_function
 from importlib import reload
 
@@ -22,13 +22,14 @@ class ProjectUI(QWidget):
     def __init__(self):
         super(ProjectUI, self).__init__()
 
-        self.envlt_project_database = master_db.EnvltProjectDatabase()
+        self.db_projects = master_db.EnvltProjectDatabase()
+        self.db_assets =asset_db.EnvltAssetDB()
 
         self.max_width = 200
         self.max_height = 150
         self.current_columns = -1
 
-        init_db = self.envlt_project_database.get_asset_libs_data("project_data")
+        init_db = self.db_assets.get_asset_libs_data("project_data")
         self.init_widget()
         self.init_layout()
         self.init_slot()
@@ -81,7 +82,7 @@ class ProjectUI(QWidget):
 
     def filter_frames(self):
         search_text = self.search_lineEdit.text()
-        all_db = self.envlt_project_database.get_asset_libs_data("project_data")
+        all_db = self.db_assets.get_asset_libs_data("project_data")
         filtered_data = [d for d in all_db if search_text in d.scene_name]
         self.add_frames(filtered_data)
 
@@ -168,7 +169,7 @@ class ProjectUI(QWidget):
         label = sender.findChild(QLabel, "frameLabel")  # 根据对象名称查找QLabel
         if label:
             scene_name = label.text().split(":")[-1].strip()
-            scene_db = self.envlt_project_database.get_asset_libs_data(scene_name)
+            scene_db = self.db_assets.get_asset_libs_data(scene_name)
             print(scene_db)
 
     def on_frame_right_clicked(self):
@@ -215,8 +216,8 @@ class ProjectUI(QWidget):
         :return:
         """
         # 在数据库中删除场景
-        self.envlt_project_database.delete_data_from_project_data(scene_name)
-        self.envlt_project_database.drop_table(scene_name)
+        self.db_assets.delete_data_from_project_data(scene_name)
+        self.db_assets.drop_table(scene_name)
 
         # 从布局中移除并删除 frame
         self.scroll_layout.removeWidget(frame)
@@ -227,7 +228,7 @@ class ProjectUI(QWidget):
         print(f"{scene_name} deleted")
 
     def open_image(self, scene_name):
-        all_db = self.envlt_project_database.get_asset_libs_data("project_data")
+        all_db = self.db_assets.get_asset_libs_data("project_data")
         scene_data = next((d for d in all_db if d.scene_name == scene_name), None)
         if scene_data and os.path.exists(scene_data.image_path):
             QDesktopServices.openUrl(QUrl.fromLocalFile(scene_data.image_path))
