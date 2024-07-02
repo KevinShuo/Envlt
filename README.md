@@ -16,6 +16,37 @@
 - [x] `ns_Envlt\utils`目录下新增`override_function.py`,该模块主要存放重写的方法
 - [x] 场景删除新增二次确认.
 - [x] 右键上下文菜单新增打开场景参考图功能
+- [x] 更新database 模块
+    1. `base_db`数据库基类
+    2. `asset_db` 资产类数据库类 控制资产表
+    3. `master_db` 场景总视图表类 控制场景总视图
+
+### `asset_db` 和 `master_db` 都继承`base_db`类
+
+```python
+""""""
+"""base_db 里放一些通用的函数"""
+
+"""创建master_db来控制项目总表类"""
+from ns_Envlt.envlt_db import master_db
+
+db_master = master_db.EnvltProjectDatabase()
+# 往下填写相关代码
+"""创建asset_db类控制资产表"""
+from ns_Envlt.envlt_db import asset_db
+
+db_asset = asset_db.EnvltAssetDB()
+# 往下填写相关代码
+```
+
+### 优化代码（元组解包） 将sqlite获取的数据自动解包
+
+```python
+# dataclass = insert_dataclass(*data)
+# 代码前面加个*代表将元组拆开为单独的元素,这样写更方便
+```
+
+- [x]  更新图片存储数据库方式为 `二进制存储方式`
 
 ***
 
