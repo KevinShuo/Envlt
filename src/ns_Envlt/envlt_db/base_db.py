@@ -15,7 +15,8 @@ class EnvltBaseDB:
         :param value: 填充的值
         :return:
         """
-        command = f"""INSERT INTO {table_name} {table_column} values (?, ?, ?, ?, ?, ?, ?)"""
+        placeholders = ', '.join(['?' for _ in table_column])
+        command = f"""INSERT INTO {table_name} {table_column} values ({placeholders})"""
         c = self.conn.cursor()
         c.execute(command, value)
         self.conn.commit()
