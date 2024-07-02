@@ -6,13 +6,14 @@ from typing import *
 
 from ns_Envlt.data import database_data
 from ns_Envlt.error import database_error
-from .base_db import EnvltBaseDB
+from . import base_db
 
 reload(database_error)
 reload(database_data)
+reload(base_db)
 
 
-class EnvltProjectDatabase(EnvltBaseDB):
+class EnvltProjectDatabase(base_db.EnvltBaseDB):
     _instance = None
 
     def __new__(cls, *args, **kwargs):
@@ -25,6 +26,7 @@ class EnvltProjectDatabase(EnvltBaseDB):
             单例模式，控制场景总表数据
         """
         super().__init__()
+        self.db_master_column = ("name", "image", "description", "create_date", "modify_date", "create_user", "enable")
 
     def create_new_scene(self, project_data: database_data.ProjectDbData):
         """
@@ -36,16 +38,14 @@ class EnvltProjectDatabase(EnvltBaseDB):
         Returns:
 
         """
-        command = f"""INSERT INTO project_data (name, image, description, create_date, modify_date, create_user, enable)
-values (?, ?, ?, ?, ?, ?, ?)"""
-        c = self.conn.cursor()
+
         rt_data = self.get_global_scene_data(scene_name=project_data.scene_name)
         if rt_data:
             raise database_error.SceneExistsError("场景已存在")
-        c.execute(command, (
+        insert_data = (
             project_data.scene_name, project_data.image_path, project_data.description, project_data.create_date,
-            project_data.modify_date, project_data.create_user, project_data.enable))
-        self.conn.commit()
+            project_data.modify_date, project_data.create_user, project_data.enable)
+        self.insert_table(table_name="project_data", table_column=self.db_master_column, value=insert_data)
 
     def get_all_scene_name(self) -> Optional[List[str]]:
         scene_name_list = []
@@ -109,32 +109,6 @@ from project_data"""
         else:
             raise AttributeError("不支持此数据查询")
 
-    def insert_data_to_table(self, origin_data: List[database_data.AssetDbData], scene_name: str):
-        """
-        往表中插入数据
-        :param origin_data:从表中获取的数据，类型为list
-        :param scene_name:总表中的场景名称
-        :return:
-        """
-        table_name = scene_name + "_libs"
-        command = f"""INSERT INTO {table_name} (name, path, asset_type, tab_type, image, description, labels, enable)
-        values (?, ?, ?, ?, ?, ?, ?,?)"""
-
-        for asset in origin_data:
-            data = (
-                asset.name,
-                asset.path,
-                asset.asset_type,
-                asset.tab_type,
-                asset.image,
-                asset.description,
-                asset.labels,
-                asset.enable
-            )
-            c = self.conn.cursor()
-            c.execute(command, data)
-        self.conn.commit()
-
     def delete_data_from_project_data(self, scene_name: str):
         """
         从总表中删除场景的索引信息
@@ -145,4 +119,3 @@ from project_data"""
         c = self.conn.cursor()
         c.execute(command, (scene_name,))
         self.conn.commit()
-

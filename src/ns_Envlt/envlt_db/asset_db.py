@@ -1,11 +1,15 @@
+from importlib import reload
 from typing import *
 from ..data import database_data
-from .base_db import EnvltBaseDB
+from . import base_db
+
+reload(base_db)
 
 
-class EnvltAssetDB(EnvltBaseDB):
+class EnvltAssetDB(base_db.EnvltBaseDB):
     def __init__(self):
         super().__init__()
+        self.db_asset_column = ("name", "path", "asset_type", "tab_type", "image", "description", "labels", "enable")
 
     def create_new_asset_table(self, scene_name: str):
         """
@@ -47,7 +51,6 @@ class EnvltAssetDB(EnvltBaseDB):
         assets = []
 
         if scene_name == "project_data":
-
             command_get_asset_lib = f"""SELECT * FROM {scene_name}"""
             c = self.conn.cursor()
             c.execute(command_get_asset_lib)
@@ -73,3 +76,24 @@ class EnvltAssetDB(EnvltBaseDB):
                                                        enable)
                 assets.append(asset_data)
         return assets
+
+    def insert_data_to_table(self, origin_data: List[database_data.AssetDbData], scene_name: str):
+        """
+        往表中插入数据
+        :param origin_data:从表中获取的数据，类型为list
+        :param scene_name:总表中的场景名称
+        :return:
+        """
+        table_name = scene_name + "_libs"
+        for asset in origin_data:
+            data = (
+                asset.name,
+                asset.path,
+                asset.asset_type,
+                asset.tab_type,
+                asset.image,
+                asset.description,
+                asset.labels,
+                asset.enable
+            )
+            self.insert_table(table_name, table_column=self.db_asset_column, value=data)

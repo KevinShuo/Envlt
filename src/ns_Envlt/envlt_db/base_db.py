@@ -6,6 +6,20 @@ class EnvltBaseDB:
     def __init__(self):
         self.conn = sqlite3.connect(self.db_path)
 
+    def insert_table(self, table_name: str, table_column: tuple, value: tuple):
+        """
+            填充表格
+
+        :param table_name: 表名
+        :param table_column: 表列
+        :param value: 填充的值
+        :return:
+        """
+        command = f"""INSERT INTO {table_name} {table_column} values (?, ?, ?, ?, ?, ?, ?)"""
+        c = self.conn.cursor()
+        c.execute(command, value)
+        self.conn.commit()
+
     def drop_table(self, scene_name: str):
         """
         删除场景表格
