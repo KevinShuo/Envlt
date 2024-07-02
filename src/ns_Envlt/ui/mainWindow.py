@@ -62,7 +62,7 @@ class mainWindow(QWidget):
         self.init_window()
         self.init_slot()
         self.log = log_factory.LogFactory("Envlt", True)
-        self.create_scene_lib_ui()
+        # self.create_scene_lib_ui()
         self.show()
 
     def init_window(self):
@@ -208,6 +208,7 @@ class mainWindow(QWidget):
         self.create_scene_ui.lineEdit_name_2.textEdited.connect(self.check_scene_exists)
         self.widgetAction_choose_image.triggered.connect(self.choose_image)
         self.widgetAction_choose_image_2.triggered.connect(self.choose_image)
+
 
     def check_scene_exists(self, text: str):
         """

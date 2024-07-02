@@ -12,6 +12,7 @@ from PySide2.QtWidgets import *
 
 from ns_Envlt.envlt_db import envlt_database
 
+
 class ProjectUI(QWidget):
     def __init__(self, project_data):
         super(ProjectUI, self).__init__()
@@ -22,9 +23,36 @@ class ProjectUI(QWidget):
         self.max_height = 150
         self.current_columns = -1
 
+        self.project_data = project_data
+        self.init_widget()
         self.init_layout()
-        self.add_frames(project_data)
+        self.init_slot()
+        self.add_frames(self.project_data)
         self.resizeEvent = self.on_resize
+
+    def init_widget(self):
+        self.search_label = QLabel("Search:")
+        self.search_label.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                font-weight: bold;
+                color: #cddced;
+            }
+        """)
+
+        self.search_lineEdit = QLineEdit()
+        self.search_lineEdit.setStyleSheet("""
+            QLineEdit {
+                background-color: #2d3341;
+                color: white;
+                border: 1px solid #555;
+                border-radius: 8px;
+                padding: 5px;
+            }
+            QLineEdit:focus {
+                border: 1px solid #cddced;
+            }
+        """)
 
     def init_layout(self):
         self.scroll_area = QScrollArea(self)
@@ -34,10 +62,22 @@ class ProjectUI(QWidget):
         self.scroll_layout = QGridLayout(self.scroll_content)
         self.scroll_area.setWidget(self.scroll_content)
 
+        HLayout = QHBoxLayout()
+        HLayout.addWidget(self.search_label)
+        HLayout.addWidget(self.search_lineEdit)
         # 主布局
         main_layout = QVBoxLayout(self)
+        main_layout.addLayout(HLayout)
         main_layout.addWidget(self.scroll_area)
         self.setLayout(main_layout)
+
+    def init_slot(self):
+        self.search_lineEdit.textChanged.connect(self.filter_frames)
+
+    def filter_frames(self):
+        search_text = self.search_lineEdit.text()
+        filtered_data = [d for d in self.project_data if search_text in d.scene_name]
+        self.add_frames(filtered_data)
 
     def create_frame(self, image_path: str, scene_name: str):
         """
@@ -124,7 +164,6 @@ class ProjectUI(QWidget):
             scene_db = self.envlt_project_database.get_asset_libs_data(scene_name)
             print(scene_db)
 
-
     def on_frame_right_clicked(self):
         """
         触发右键信号，并触发对应操作
@@ -136,7 +175,6 @@ class ProjectUI(QWidget):
         if label:
             scene_name = label.text().split(":")[-1].strip()
             self.show_context_menu(sender, scene_name)
-
 
     def show_context_menu(self, frame, scene_name):
         """
@@ -181,6 +219,8 @@ class ProjectUI(QWidget):
 该模块主要用于设置QFrame样式和重写的方法
 
 """
+
+
 class HoverableFrame(QFrame):
     clicked = Signal()  # 定义一个信号
     rightClicked = Signal()
