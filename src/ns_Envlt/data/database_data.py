@@ -17,6 +17,7 @@ class ProjectDbData:
     """
         全局场景数据
     """
+    _id: Optional[str]
     scene_name: str
     image_path: Optional[str]
     description: Optional[str]
@@ -28,6 +29,7 @@ class ProjectDbData:
     def __str__(self):
         return (
             f"======== ProjectDbData ========\n"
+            f"ID: {self._id}\n"
             f"scene_name: {self.scene_name}\n"
             f"image_path: {self.image_path}\n"
             f"description: {self.description}\n"
@@ -40,7 +42,8 @@ class ProjectDbData:
 
     def __eq__(self, other):
         if isinstance(other, ProjectDbData):
-            return (self.scene_name == other.scene_name and
+            return (self._id == other._id and
+                    self.scene_name == other.scene_name and
                     self.image_path == other.image_path and
                     self.description == other.description and
                     self.create_date == other.create_date and

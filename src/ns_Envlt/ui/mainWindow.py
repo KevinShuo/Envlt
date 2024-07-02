@@ -216,7 +216,7 @@ class mainWindow(QWidget):
         :param text:当前name文本框里的文本
         :return:
         """
-        self.envlt_project_database = master_db.EnvltProjectDatabase()
+        self.db_project = master_db.EnvltProjectDatabase()
         sender = self.sender()
         all_scene_name = self.db_project.get_all_scene_name()
         if sender == self.create_scene_ui.lineEdit_name:
@@ -298,7 +298,7 @@ class mainWindow(QWidget):
 
         # user
 
-        scene_data = database_data.ProjectDbData(scene_name, image_server_path, description, self.now_time,
+        scene_data = database_data.ProjectDbData(None, scene_name, image_server_path, description, self.now_time,
                                                  self.now_time, self.user,
                                                  enable=True)
         try:

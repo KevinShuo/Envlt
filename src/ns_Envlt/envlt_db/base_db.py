@@ -20,6 +20,19 @@ class EnvltBaseDB:
         c.execute(command, value)
         self.conn.commit()
 
+    def get_all_data_from_table(self, table_name: str, insert_dataclass):
+        data_list = []
+        command_get_asset_lib = f"""SELECT * FROM {table_name}"""
+        c = self.conn.cursor()
+        c.execute(command_get_asset_lib)
+        datas = c.fetchall()
+        if not datas:
+            return
+        for data in datas:
+            dataclass = insert_dataclass(*data)
+            data_list.append(dataclass)
+        return data_list
+
     def drop_table(self, scene_name: str):
         """
         删除场景表格
