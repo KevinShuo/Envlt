@@ -157,7 +157,7 @@ class ProjectUI(QWidget):
 
     def on_resize(self, event):
         self.update_layout()
-        super(ProjectUI, self).resizeEvent(event)
+        QWidget.resizeEvent(self, event)
 
     def add_frames(self, project_data):
         self.frames = []
