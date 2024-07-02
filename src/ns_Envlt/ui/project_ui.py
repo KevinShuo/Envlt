@@ -19,7 +19,7 @@ import os
 reload(override_function)
 
 class ProjectUI(QWidget):
-    def __init__(self, project_data):
+    def __init__(self):
         super(ProjectUI, self).__init__()
 
         self.envlt_project_database = envlt_database.EnvltProjectDatabase()
@@ -28,11 +28,11 @@ class ProjectUI(QWidget):
         self.max_height = 150
         self.current_columns = -1
 
-        self.project_data = project_data
+        init_db = self.envlt_project_database.get_asset_libs_data("project_data")
         self.init_widget()
         self.init_layout()
         self.init_slot()
-        self.add_frames(self.project_data)
+        self.add_frames(init_db)
         self.resizeEvent = self.on_resize
 
     def init_widget(self):
@@ -81,7 +81,8 @@ class ProjectUI(QWidget):
 
     def filter_frames(self):
         search_text = self.search_lineEdit.text()
-        filtered_data = [d for d in self.project_data if search_text in d.scene_name]
+        all_db = self.envlt_project_database.get_asset_libs_data("project_data")
+        filtered_data = [d for d in all_db if search_text in d.scene_name]
         self.add_frames(filtered_data)
 
     def create_frame(self, image_path: str, scene_name: str):

@@ -8,9 +8,6 @@ import datetime
 import getpass
 import os
 from enum import Enum
-
-from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui, scene_lib
-
 from importlib import reload
 
 from PySide2.QtCore import Qt, Signal
@@ -19,12 +16,13 @@ from PySide2.QtWidgets import *
 from maya.OpenMayaUI import MQtUtil_mainWindow
 from shiboken2 import wrapInstance
 
+from ns_Envlt.config.json_config_factory import JsonConfigFactory
 from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import envlt_database
 from ns_Envlt.envlt_log import log_factory
-from ns_Envlt.config.json_config_factory import JsonConfigFactory
 from ns_Envlt.error import database_error
 from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui
+from ns_Envlt.ui import scene_lib
 from ns_Envlt.utils import os_util
 
 reload(project_ui)
@@ -76,8 +74,7 @@ class mainWindow(QWidget):
         self.dialog = envlt_messagebox.EnvltDialog()
 
         # 构建Project页面
-        all_db = self.envlt_project_database.get_asset_libs_data("project_data")
-        self.project_ui = project_ui.ProjectUI(all_db)
+        self.project_ui = project_ui.ProjectUI()
         self.envlt.stackedWidget.addWidget(self.project_ui)
         # init check user
         self.user = getpass.getuser()
@@ -209,6 +206,7 @@ class mainWindow(QWidget):
         self.widgetAction_choose_image.triggered.connect(self.choose_image)
         self.widgetAction_choose_image_2.triggered.connect(self.choose_image)
 
+        self.project_ui.search_lineEdit.textChanged.connect()
 
     def check_scene_exists(self, text: str):
         """
@@ -216,6 +214,7 @@ class mainWindow(QWidget):
         :param text:当前name文本框里的文本
         :return:
         """
+        self.envlt_project_database = envlt_database.EnvltProjectDatabase()
         sender = self.sender()
         all_scene_name = self.envlt_project_database.get_all_scene_name()
         if sender == self.create_scene_ui.lineEdit_name:
@@ -242,6 +241,7 @@ class mainWindow(QWidget):
                 self.duplicate_label_2.setVisible(False)
                 self.create_scene_ui.pushButton_create.setEnabled(True)
                 self.create_scene_ui.pushButton_create.setStyleSheet("")
+
 
     def create_scene(self):
         """
