@@ -227,7 +227,8 @@ class ProjectUI(QWidget):
         print(f"{scene_name} deleted")
 
     def open_image(self, scene_name):
-        scene_data = next((d for d in self.project_data if d.scene_name == scene_name), None)
+        all_db = self.envlt_project_database.get_asset_libs_data("project_data")
+        scene_data = next((d for d in all_db if d.scene_name == scene_name), None)
         if scene_data and os.path.exists(scene_data.image_path):
             QDesktopServices.openUrl(QUrl.fromLocalFile(scene_data.image_path))
         else:
