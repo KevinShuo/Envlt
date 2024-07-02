@@ -79,7 +79,7 @@ class mainWindow(QWidget):
         # 构建Project页面
 
         self.project_ui = project_ui.ProjectUI()
- 
+
         self.envlt.stackedWidget.addWidget(self.project_ui)
         # init check user
         self.user = getpass.getuser()
@@ -210,14 +210,13 @@ class mainWindow(QWidget):
         self.widgetAction_choose_image.triggered.connect(self.choose_image)
         self.widgetAction_choose_image_2.triggered.connect(self.choose_image)
 
-
     def check_scene_exists(self, text: str):
         """
             实时检查场景是否存在数据库中，如果存在则给与提示并禁用创建按钮
         :param text:当前name文本框里的文本
         :return:
         """
-        self.envlt_project_database = envlt_database.EnvltProjectDatabase()
+        self.db_project = master_db.EnvltProjectDatabase()
         sender = self.sender()
         all_scene_name = self.db_project.get_all_scene_name()
         if sender == self.create_scene_ui.lineEdit_name:
@@ -244,7 +243,6 @@ class mainWindow(QWidget):
                 self.duplicate_label_2.setVisible(False)
                 self.create_scene_ui.pushButton_create.setEnabled(True)
                 self.create_scene_ui.pushButton_create.setStyleSheet("")
-
 
     def create_scene(self):
         """
@@ -300,7 +298,7 @@ class mainWindow(QWidget):
 
         # user
 
-        scene_data = database_data.ProjectDbData(scene_name, image_server_path, description, self.now_time,
+        scene_data = database_data.ProjectDbData(None, scene_name, image_server_path, description, self.now_time,
                                                  self.now_time, self.user,
                                                  enable=True)
         try:
@@ -334,7 +332,7 @@ class mainWindow(QWidget):
         try:
             self.db_project.create_new_scene(clone_scene_data)
             self.db_assets.create_new_asset_table(name_after_clone)
-            self.db_project.insert_data_to_table(db, name_after_clone)
+            self.db_assets.insert_data_to_table(db, name_after_clone)
             self.dialog.information("创建成功", f"创建{name_after_clone}场景 成功")
             del self.db_project
         except database_error.SceneExistsError as e:
