@@ -9,20 +9,20 @@ Project页面下的场景预览
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-from ns_Envlt.envlt_db import envlt_database
+from ns_Envlt.envlt_db import master_db
 from ns_Envlt.utils import override_function
 from importlib import reload
 
 import os
 
-
 reload(override_function)
+
 
 class ProjectUI(QWidget):
     def __init__(self):
         super(ProjectUI, self).__init__()
 
-        self.envlt_project_database = envlt_database.EnvltProjectDatabase()
+        self.envlt_project_database = master_db.EnvltProjectDatabase()
 
         self.max_width = 200
         self.max_height = 150
@@ -233,4 +233,3 @@ class ProjectUI(QWidget):
             QDesktopServices.openUrl(QUrl.fromLocalFile(scene_data.image_path))
         else:
             QMessageBox.warning(self, "Error", "Image not found or path is incorrect.")
-
