@@ -196,6 +196,9 @@ QTabWidget &gt; QWidget{
         <property name="currentIndex">
          <number>0</number>
         </property>
+        <property name="tabsClosable">
+         <bool>false</bool>
+        </property>
         <property name="movable">
          <bool>true</bool>
         </property>

@@ -280,15 +280,19 @@ class mainWindow(QWidget):
         # scene name
         scene_name = self.create_scene_ui.lineEdit_name.text()
         # image path
-        image = self.create_scene_ui.lineEdit_image.text()
+        image_path = self.create_scene_ui.lineEdit_image.text()
         image_server_path = None
-        if image and os.path.exists(image):
-            img_scene = os_util.UIResource()
-            image_server_path = img_scene.upload_img(image)
-            if not image_server_path:
-                self.dialog.error("上传图片失败", "上传图片到服务器失败,请联系TD")
-                raise AttributeError("上传图片失败")
-        elif not os.path.exists(image):
+        if image_path and os.path.exists(image_path):
+            """遗弃上传image的功能，改为读取图片二进制"""
+            # img_scene = os_util.UIResource()
+            # image_server_path = img_scene.upload_img(image)
+            # if not image_server_path:
+            #     self.dialog.error("上传图片失败", "上传图片到服务器失败,请联系TD")
+            #     raise AttributeError("上传图片失败")
+            """===================================="""
+            with open(image_path, "rb") as image_file:
+                content = image_file.read()
+        elif not os.path.exists(image_path):
             self.dialog.error("图片路径不存在", "图片路径不存在")
             raise OSError("图片路径不存在")
         else:
@@ -297,8 +301,7 @@ class mainWindow(QWidget):
         description = self.create_scene_ui.textEdit_description.toPlainText()
 
         # user
-
-        scene_data = database_data.ProjectDbData(None, scene_name, image_server_path, description, self.now_time,
+        scene_data = database_data.ProjectDbData(None, scene_name, str(content), description, self.now_time,
                                                  self.now_time, self.user,
                                                  enable=True)
         try:
