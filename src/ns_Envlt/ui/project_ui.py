@@ -9,9 +9,14 @@ Project页面下的场景预览
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-
 from ns_Envlt.envlt_db import envlt_database
+from ns_Envlt.utils import override_function
+from importlib import reload
 
+import os
+
+
+reload(override_function)
 
 class ProjectUI(QWidget):
     def __init__(self, project_data):
@@ -90,7 +95,7 @@ class ProjectUI(QWidget):
         """
 
         # 创建一个HoverableFrame
-        card_frame = HoverableFrame()
+        card_frame = override_function.HoverableFrame()
         card_frame.setFrameShape(QFrame.Box)
         card_frame.setFrameShadow(QFrame.Raised)
         card_frame.setFixedSize(self.max_width, self.max_height)  # 设置固定大小
@@ -105,6 +110,7 @@ class ProjectUI(QWidget):
         pixmap = QPixmap(image_path)
         scale_pixmap = pixmap.scaled(self.max_width, self.max_height, Qt.KeepAspectRatio)  # 缩小图片高度比例
         image.setPixmap(scale_pixmap)
+        image.setAlignment(Qt.AlignCenter)
         layout.addWidget(image)
 
         # 设置标签
@@ -186,13 +192,19 @@ class ProjectUI(QWidget):
         context_menu = QMenu(self)
         delete_action = context_menu.addAction("删除")
         # 添加更多的选项
-        detail_action = context_menu.addAction("场景信息")
+        pic_view = context_menu.addAction("参考图")
 
         action = context_menu.exec_(QCursor.pos())
         if action == delete_action:
+            self.confirm_delete_scene(frame, scene_name)
+        elif action == pic_view:
+            self.open_image(scene_name)
+
+    def confirm_delete_scene(self, frame, scene_name):
+        dialog = override_function.ConfirmDialog(f"确定要删除场景 '{scene_name}' 吗？", self)
+        result = dialog.exec_()
+        if result == QDialog.Accepted:
             self.delete_scene(frame, scene_name)
-        # elif action == detail_action:
-        #     print(scene_name)
 
     def delete_scene(self, frame, scene_name):
         """
@@ -213,54 +225,10 @@ class ProjectUI(QWidget):
 
         print(f"{scene_name} deleted")
 
+    def open_image(self, scene_name):
+        scene_data = next((d for d in self.project_data if d.scene_name == scene_name), None)
+        if scene_data and os.path.exists(scene_data.image_path):
+            QDesktopServices.openUrl(QUrl.fromLocalFile(scene_data.image_path))
+        else:
+            QMessageBox.warning(self, "Error", "Image not found or path is incorrect.")
 
-"""
-
-该模块主要用于设置QFrame样式和重写的方法
-
-"""
-
-
-class HoverableFrame(QFrame):
-    clicked = Signal()  # 定义一个信号
-    rightClicked = Signal()
-
-    def __init__(self, parent=None):
-        super(HoverableFrame, self).__init__(parent)
-        self.setStyleSheet("""
-            QFrame {
-                border: 1px solid #555;
-                border-radius: 8px;
-                background-color: #2d3341;
-            }
-            QFrame:hover {
-                border: 1px solid #fff;
-            }
-        """)
-
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.clicked.emit()  # 触发左键点击信号
-        elif event.button() == Qt.RightButton:
-            self.rightClicked.emit()  # 触发右键点击信号
-        super(HoverableFrame, self).mousePressEvent(event)
-
-    def enterEvent(self, event):
-        self.setStyleSheet("""
-            QFrame {
-                border: 1px solid #cddced;
-                border-radius: 8px;
-                background-color: #2d3341;
-            }
-        """)
-        super(HoverableFrame, self).enterEvent(event)
-
-    def leaveEvent(self, event):
-        self.setStyleSheet("""
-            QFrame {
-                border: 1px solid #555;
-                border-radius: 8px;
-                background-color: #2d3341;
-            }
-        """)
-        super(HoverableFrame, self).leaveEvent(event)
