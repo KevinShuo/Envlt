@@ -27,6 +27,8 @@ class ProjectUI(QWidget):
     def __init__(self):
         super(ProjectUI, self).__init__()
 
+        self.image_windows = []
+
         self.db_projects = master_db.EnvltProjectDatabase()
         self.db_assets = asset_db.EnvltAssetDB()
 
@@ -248,7 +250,8 @@ class ProjectUI(QWidget):
             image_data_dict = eval(scene_data.image_data)
             original_image_data = image_data_dict["original"]
             a = image_window.ImageWindow(original_image_data)
-            a.exec_()
+            a.show()
+            self.image_windows.append(a)
         else:
             QMessageBox.warning(self, "Error", "Image not found or path is incorrect.")
 
