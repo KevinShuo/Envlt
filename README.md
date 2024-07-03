@@ -24,7 +24,28 @@ image.resize_image(960, 540)
 image_size = image.get_image_size()
 print(f"width: {image_size.width} height: {image_size.height}")
 ```
+- [x] `ns_Envlt/utils`目录下新增`info_fuction.py`用于消息通知 
+```python
+# Sample
+from ns_Envlt.utils import info_function
 
+def delete_notification(self, scene_name):
+    title = f"Notification {len(info_function.NotificationWidget.instances) + 1}"
+    message = f"Scene {scene_name} has been Deleted."
+    new_notification = info_function.NotificationWidget(title, message)
+
+```
+- [x] 修改`mainWindow`下创建和克隆时上传图片的逻辑，将缩略图和原图的二进制数据保存为一个字典.根据不同情况调用不同图片
+  - [x] 生成缩略图所用模块为`PIL`和`io`
+  - [x] 在二进制数据字典上传数据库时将其转换为了`字符串`。后续调用前需使用将其还原为`字典`
+```python
+"""
+image_data_dict = {
+                "original": original_image_data,
+                "small": thumbnail_data
+            }
+"""
+```
 ***
 
 ### 2024/07/02

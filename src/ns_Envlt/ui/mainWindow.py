@@ -6,11 +6,12 @@
 # @Project : Envlt
 import datetime
 import getpass
+import io
 import os
 from enum import Enum
-
 from importlib import reload
 
+from PIL import Image
 from PySide2.QtCore import Qt, Signal
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
@@ -22,12 +23,8 @@ from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import master_db, asset_db
 from ns_Envlt.envlt_log import log_factory
 from ns_Envlt.error import database_error
-
 from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui, scene_lib
-
-from ns_Envlt.utils import os_util,info_function
-
-
+from ns_Envlt.utils import os_util
 
 reload(project_ui)
 reload(scene_lib)
@@ -296,7 +293,18 @@ class mainWindow(QWidget):
             #     raise AttributeError("上传图片失败")
             """===================================="""
             with open(image_path, "rb") as image_file:
-                content = image_file.read()
+                original_image_data = image_file.read()
+
+            with Image.open(image_path) as img:
+                img.thumbnail((240, 180))  # Set the size of the thumbnail
+                thumbnail_io = io.BytesIO()
+                img.save(thumbnail_io, format=img.format)
+                thumbnail_data = thumbnail_io.getvalue()
+
+            image_data_dict = {
+                "original": original_image_data,
+                "small": thumbnail_data
+            }
         elif not os.path.exists(image_path):
             self.dialog.error("图片路径不存在", "图片路径不存在")
             raise OSError("图片路径不存在")
@@ -306,7 +314,7 @@ class mainWindow(QWidget):
         description = self.create_scene_ui.textEdit_description.toPlainText()
 
         # user
-        scene_data = database_data.ProjectDbData(None, scene_name, str(content), description, self.now_time,
+        scene_data = database_data.ProjectDbData(None, scene_name, str(image_data_dict), description, self.now_time,
                                                  self.now_time, self.user,
                                                  enable=True)
         try:
@@ -319,8 +327,6 @@ class mainWindow(QWidget):
             self.dialog.error("错误", "场景已存在")
 
         self.project_refresh.emit()
-
-
 
     def _clone_scene(self):
         """
@@ -336,7 +342,21 @@ class mainWindow(QWidget):
         if not db:
             raise database_error.SceneAssetNoDataError("原始场景里没有数据,禁止克隆空的场景。")
         # 在总表里插入一行新的场景数据
-        clone_scene_data = database_data.ProjectDbData(None, name_after_clone, image_after_clone,
+        if image_after_clone and os.path.exists(image_after_clone):
+            with open(image_after_clone, "rb") as image_file:
+                original_image_data = image_file.read()
+
+            with Image.open(image_after_clone) as img:
+                img.thumbnail((240, 180))  # Set the size of the thumbnail
+                thumbnail_io = io.BytesIO()
+                img.save(thumbnail_io, format=img.format)
+                thumbnail_data = thumbnail_io.getvalue()
+
+            image_data_dict = {
+                "original": original_image_data,
+                "small": thumbnail_data
+            }
+        clone_scene_data = database_data.ProjectDbData(None, name_after_clone, str(image_data_dict),
                                                        description_after_clone,
                                                        self.now_time,
                                                        self.now_time, self.user, enable=True)
@@ -392,5 +412,3 @@ class mainWindow(QWidget):
         _scene_lib = scene_lib.Ui_Form()
         _scene_lib.setupUi(self.widget_scene_lib)
         self.widget_scene_lib.show()
-
-

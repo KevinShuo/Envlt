@@ -6,7 +6,6 @@ Project页面下的场景预览
 当前开发若要获取更多场景信息，单击项目可以在输出中查看到场景的具体资产信息
 
 """
-import os
 from importlib import reload
 
 from PySide2.QtCore import *
@@ -14,7 +13,7 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
 from ns_Envlt.envlt_db import master_db, asset_db
-from ns_Envlt.utils import override_function,info_function
+from ns_Envlt.utils import override_function, info_function
 from . import image_window
 
 reload(override_function)
@@ -101,6 +100,9 @@ class ProjectUI(QWidget):
         :param scene_name: 场景名称
         :return:
         """
+        # 将字符串格式的图像数据转换为字典
+        image_data_dict = eval(image_data)
+        small_data = image_data_dict["small"]
 
         # 创建一个HoverableFrame
         card_frame = override_function.HoverableFrame()
@@ -116,10 +118,9 @@ class ProjectUI(QWidget):
         # 设置图片
         image = QLabel()
         pixmap = QPixmap()
-        d = QByteArray(image_data)
-        pixmap.loadFromData(d)
-        scale_pixmap = pixmap.scaled(self.max_width, self.max_height, Qt.KeepAspectRatio)  # 缩小图片高度比例
-        image.setPixmap(scale_pixmap)
+        pic = QByteArray(small_data)
+        pixmap.loadFromData(pic)
+        image.setPixmap(pixmap)
         image.setAlignment(Qt.AlignCenter)
         layout.addWidget(image)
 
@@ -164,12 +165,11 @@ class ProjectUI(QWidget):
         self.frames = []
         if project_data:
             for i in project_data:
-                frame = self.create_frame(eval(i.image_data), f"Scene: {i.scene_name} ")
+                frame = self.create_frame(i.image_data, f"Scene: {i.scene_name} ")
                 self.frames.append(frame)
             self.update_layout(force_update=True)  # 初始布局时强制更新
         else:
             pass
-
 
     def on_frame_clicked(self):
         """
@@ -239,17 +239,20 @@ class ProjectUI(QWidget):
 
         # print(f"{scene_name} deleted")
         self.delete_notification(scene_name)
+
     def open_image(self, scene_name):
         all_db = self.db_assets.get_asset_libs_data("project_data")
         scene_data = next((d for d in all_db if d.scene_name == scene_name), None)
         if scene_data:
-            a = image_window.ImageWindow(eval(scene_data.image_data))
+            # 将字符串格式的图像数据转换为字典
+            image_data_dict = eval(scene_data.image_data)
+            original_image_data = image_data_dict["original"]
+            a = image_window.ImageWindow(original_image_data)
             a.exec_()
         else:
             QMessageBox.warning(self, "Error", "Image not found or path is incorrect.")
 
-
-    def delete_notification(self,scene_name):
+    def delete_notification(self, scene_name):
         title = f"Notification {len(info_function.NotificationWidget.instances) + 1}"
         message = f"Scene {scene_name} has been Deleted."
-        new_notification = info_function.NotificationWidget(title,message)
+        new_notification = info_function.NotificationWidget(title, message)
