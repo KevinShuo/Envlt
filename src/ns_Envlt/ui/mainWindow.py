@@ -248,6 +248,7 @@ class mainWindow(QWidget):
                     self.create_scene_ui.pushButton_create.setStyleSheet("")
         else:
             pass
+
     def create_scene(self):
         """
             创建一个新的场景
