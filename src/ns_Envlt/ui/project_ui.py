@@ -14,13 +14,14 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
 from ns_Envlt.envlt_db import master_db, asset_db
-from ns_Envlt.utils import override_function
+from ns_Envlt.utils import override_function,info_function
 from . import image_window
 
 reload(override_function)
 reload(master_db)
 reload(asset_db)
 reload(image_window)
+reload(info_function)
 
 
 class ProjectUI(QWidget):
@@ -30,8 +31,8 @@ class ProjectUI(QWidget):
         self.db_projects = master_db.EnvltProjectDatabase()
         self.db_assets = asset_db.EnvltAssetDB()
 
-        self.max_width = 200
-        self.max_height = 150
+        self.max_width = 240
+        self.max_height = 180
         self.current_columns = -1
 
         init_db = self.db_assets.get_asset_libs_data("project_data")
@@ -236,8 +237,8 @@ class ProjectUI(QWidget):
         self.frames.remove(frame)
         self.update_layout(force_update=True)
 
-        print(f"{scene_name} deleted")
-
+        # print(f"{scene_name} deleted")
+        self.delete_notification(scene_name)
     def open_image(self, scene_name):
         all_db = self.db_assets.get_asset_libs_data("project_data")
         scene_data = next((d for d in all_db if d.scene_name == scene_name), None)
@@ -246,3 +247,9 @@ class ProjectUI(QWidget):
             a.exec_()
         else:
             QMessageBox.warning(self, "Error", "Image not found or path is incorrect.")
+
+
+    def delete_notification(self,scene_name):
+        title = f"Notification {len(info_function.NotificationWidget.instances) + 1}"
+        message = f"Scene {scene_name} has been Deleted."
+        new_notification = info_function.NotificationWidget(title,message)

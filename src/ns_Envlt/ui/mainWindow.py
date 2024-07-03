@@ -25,7 +25,9 @@ from ns_Envlt.error import database_error
 
 from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui, scene_lib
 
-from ns_Envlt.utils import os_util
+from ns_Envlt.utils import os_util,info_function
+
+
 
 reload(project_ui)
 reload(scene_lib)
@@ -63,7 +65,7 @@ class mainWindow(QWidget):
         self.init_window()
         self.init_slot()
         self.log = log_factory.LogFactory("Envlt", True)
-        # self.create_scene_lib_ui()
+
         self.show()
 
     def init_window(self):
@@ -317,6 +319,8 @@ class mainWindow(QWidget):
 
         self.project_refresh.emit()
 
+
+
     def _clone_scene(self):
         """
             克隆一个场景
@@ -387,3 +391,5 @@ class mainWindow(QWidget):
         _scene_lib = scene_lib.Ui_Form()
         _scene_lib.setupUi(self.widget_scene_lib)
         self.widget_scene_lib.show()
+
+
