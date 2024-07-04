@@ -62,7 +62,7 @@ class mainWindow(QWidget):
         self.init_window()
         self.init_slot()
         self.log = log_factory.LogFactory("Envlt", True)
-
+        # self.create_scene_lib_ui()
         self.show()
 
     def init_window(self):
@@ -404,11 +404,11 @@ class mainWindow(QWidget):
         else:
             raise AttributeError("Has not support this page")
 
-    def create_scene_lib_ui(self):
-        from ns_Envlt.ui import scene_lib
-        reload(scene_lib)
-        self.widget_scene_lib = QWidget(self)
-        self.widget_scene_lib.setWindowFlags(Qt.Window)
-        _scene_lib = scene_lib.Ui_Form()
-        _scene_lib.setupUi(self.widget_scene_lib)
-        self.widget_scene_lib.show()
+    # def create_scene_lib_ui(self):
+    #     from ns_Envlt.ui import scene_lib
+    #     reload(scene_lib)
+    #     self.widget_scene_lib = QWidget(self)
+    #     self.widget_scene_lib.setWindowFlags(Qt.Window)
+    #     _scene_lib = scene_lib.Ui_Form()
+    #     _scene_lib.setupUi(self.widget_scene_lib)
+    #     self.widget_scene_lib.show()

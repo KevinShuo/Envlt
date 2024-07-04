@@ -113,6 +113,7 @@ class ProjectUI(QWidget):
         card_frame.setFixedSize(self.max_width, self.max_height)  # 设置固定大小
         card_frame.clicked.connect(self.on_frame_clicked)  # 连接点击信号到槽函数
         card_frame.rightClicked.connect(self.on_frame_right_clicked)
+        card_frame.doubleClicked.connect(self.create_scene_lib_ui)
 
         # 设置布局
         layout = QVBoxLayout(card_frame)
@@ -255,7 +256,13 @@ class ProjectUI(QWidget):
         else:
             QMessageBox.warning(self, "Error", "Image not found or path is incorrect.")
 
-    def delete_notification(self, scene_name):
-        title = f"Notification {len(info_function.NotificationWidget.instances) + 1}"
-        message = f"Scene {scene_name} has been Deleted."
-        new_notification = info_function.NotificationWidget(title, message)
+    def create_scene_lib_ui(self):
+        from ns_Envlt.ui import scene_lib
+        reload(scene_lib)
+        self.widget_scene_lib = QWidget(self)
+        self.widget_scene_lib.setWindowFlags(Qt.Window)
+        _scene_lib = scene_lib.Ui_Form()
+        _scene_lib.setupUi(self.widget_scene_lib)
+        self.widget_scene_lib.show()
+
+
