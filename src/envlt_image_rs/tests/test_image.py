@@ -7,3 +7,5 @@ image.resize_image(960, 540)
 # 获取图片分辨率
 image_size = image.get_image_size()
 print(f"width: {image_size.width} height: {image_size.height}")
+
+
