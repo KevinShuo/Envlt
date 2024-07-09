@@ -2,6 +2,7 @@
 import sys
 import traceback
 
+sys.path.append(r"L:\TD\01_TD\py_package")
 sys.path.append(r"C:\dev\maya\Envlt\src")
 from importlib import reload
 from ns_Envlt.ui import mainWindow

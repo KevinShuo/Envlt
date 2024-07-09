@@ -264,5 +264,3 @@ class ProjectUI(QWidget):
         _scene_lib = scene_lib.Ui_Form()
         _scene_lib.setupUi(self.widget_scene_lib)
         self.widget_scene_lib.show()
-
-
