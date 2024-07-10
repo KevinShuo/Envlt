@@ -257,6 +257,7 @@ class ProjectUI(QWidget):
             QMessageBox.warning(self, "Error", "Image not found or path is incorrect.")
 
     def create_scene_lib_ui(self):
+        
         from ns_Envlt.ui import scene_lib
         reload(scene_lib)
         self.widget_scene_lib = QWidget(self)
