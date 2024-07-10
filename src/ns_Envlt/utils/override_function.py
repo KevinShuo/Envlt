@@ -7,11 +7,12 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
-
 """
 HoverableFrame为重写QFrame方法，可以触发对应的点击信号。
 
 """
+
+
 class HoverableFrame(QFrame):
     clicked = Signal()  # 定义一个信号
     rightClicked = Signal()
@@ -21,12 +22,12 @@ class HoverableFrame(QFrame):
         super(HoverableFrame, self).__init__(parent)
         self.setStyleSheet("""
             QFrame {
-                border: 1px solid #555;
-                border-radius: 8px;
-                background-color: #2d3341;
+                border: 1px solid #414654;
+                border-radius: 10px;
+                background-color: #414654;
             }
-            QFrame:hover {
-                border: 1px solid #fff;
+            QWidget:hover {
+                border: 1px solid #e0e0e0;
             }
         """)
 
@@ -42,30 +43,18 @@ class HoverableFrame(QFrame):
             self.doubleClicked.emit()  # 触发左键双击信号
         super(HoverableFrame, self).mouseDoubleClickEvent(event)
 
-    def enterEvent(self, event):
-        self.setStyleSheet("""
-            QFrame {
-                border: 1px solid #cddced;
-                border-radius: 8px;
-                background-color: #2d3341;
-            }
-        """)
-        super(HoverableFrame, self).enterEvent(event)
-
-    def leaveEvent(self, event):
-        self.setStyleSheet("""
-            QFrame {
-                border: 1px solid #555;
-                border-radius: 8px;
-                background-color: #2d3341;
-            }
-        """)
-        super(HoverableFrame, self).leaveEvent(event)
-
+    # def enterEvent(self, event):
+    #     super(HoverableFrame, self).enterEvent(event)
+    #
+    # def leaveEvent(self, event):
+    #     super(HoverableFrame, self).leaveEvent(event)
+    #
 
 """
 ConfirmDialog为重写的确认窗口
 """
+
+
 class ConfirmDialog(QDialog):
     def __init__(self, message, parent=None):
         super(ConfirmDialog, self).__init__(parent)
@@ -120,3 +109,27 @@ class ConfirmDialog(QDialog):
 
         self.yes_button.clicked.connect(self.accept)
         self.no_button.clicked.connect(self.reject)
+
+
+def create_rounded_pixmap(pixmap: QPixmap, radius: int) -> QPixmap:
+    """
+        creates a rounded QPixmap from a QPixmap
+
+    :param pixmap: original QPixmap
+    :param radius: radius of rounded QPixmap
+    :return:
+    """
+    rounded_pixmap = QPixmap(pixmap)
+    rounded_pixmap.fill(Qt.transparent)
+
+    painter = QPainter(rounded_pixmap)
+    painter.setRenderHint(QPainter.Antialiasing)
+    painter.setRenderHint(QPainter.SmoothPixmapTransform)
+
+    path = QPainterPath()
+    path.addRoundedRect(QRectF(pixmap.rect()), radius, radius, Qt.RelativeSize)
+
+    painter.setClipPath(path)
+    painter.drawPixmap(0, 0, pixmap)
+    painter.end()
+    return rounded_pixmap

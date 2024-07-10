@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
-    <height>640</height>
+    <width>479</width>
+    <height>667</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -212,6 +212,13 @@ QTabWidget &gt; QWidget{
           <string>+</string>
          </attribute>
         </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="horizontalSlider">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
        </widget>
       </item>
      </layout>

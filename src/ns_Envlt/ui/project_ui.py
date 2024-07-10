@@ -6,6 +6,7 @@ Project页面下的场景预览
 当前开发若要获取更多场景信息，单击项目可以在输出中查看到场景的具体资产信息
 
 """
+import asyncio
 from importlib import reload
 
 from PySide2.QtCore import *
@@ -13,6 +14,7 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
 from ns_Envlt.envlt_db import master_db, asset_db
+from ns_Envlt.data import database_data
 from ns_Envlt.utils import override_function, info_function
 from . import image_window
 
@@ -21,19 +23,21 @@ reload(master_db)
 reload(asset_db)
 reload(image_window)
 reload(info_function)
+reload(database_data)
 
 
 class ProjectUI(QWidget):
     def __init__(self):
         super(ProjectUI, self).__init__()
-
+        self.setObjectName("ProjectUI")
         self.image_windows = []
 
         self.db_projects = master_db.EnvltProjectDatabase()
         self.db_assets = asset_db.EnvltAssetDB()
 
-        self.max_width = 240
-        self.max_height = 180
+        self.max_width = 230
+        self.max_height = 220
+        self.default_image_size = self.max_width
         self.current_columns = -1
 
         init_db = self.db_assets.get_asset_libs_data("project_data")
@@ -44,6 +48,7 @@ class ProjectUI(QWidget):
         self.resizeEvent = self.on_resize
 
     def init_widget(self):
+        # self.setStyleSheet("QWidget{background-color:white;}")
         self.search_label = QLabel("Search:")
         self.search_label.setStyleSheet("""
             QLabel {
@@ -69,10 +74,13 @@ class ProjectUI(QWidget):
 
     def init_layout(self):
         self.scroll_area = QScrollArea(self)
-        self.scroll_area.setStyleSheet("background-color: rgb(41, 46, 59);")
+        self.scroll_area.setStyleSheet("background-color: #292e3b;")
         self.scroll_area.setWidgetResizable(True)
         self.scroll_content = QWidget()
         self.scroll_layout = QGridLayout(self.scroll_content)
+        self.scroll_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+        self.scroll_layout.setSpacing(22)
+
         self.scroll_area.setWidget(self.scroll_content)
 
         HLayout = QHBoxLayout()
@@ -93,17 +101,16 @@ class ProjectUI(QWidget):
         filtered_data = [d for d in all_db if search_text in d.scene_name]
         self.add_frames(filtered_data)
 
-    def create_frame(self, image_data: str, scene_name: str):
+    def create_frame(self, project_data: database_data.ProjectDbData):
         """
 
         批量创建project页面下的场景元素时所调用的函数，若要修改每个QFrame包含部件可以在这个函数中修改
 
-        :param image_data: 预览图路径
-        :param scene_name: 场景名称
+        :param project_data: project data
         :return:
         """
         # 将字符串格式的图像数据转换为字典
-        image_data_dict = eval(image_data)
+        image_data_dict = eval(project_data.image_data)
         small_data = image_data_dict["small"]
 
         # 创建一个HoverableFrame
@@ -123,18 +130,28 @@ class ProjectUI(QWidget):
         pixmap = QPixmap()
         pic = QByteArray(small_data)
         pixmap.loadFromData(pic)
-        image.setPixmap(pixmap)
+        new_pic = pixmap.scaledToWidth(self.default_image_size, Qt.SmoothTransformation)
+        image.setPixmap(new_pic)
+        # image.setMinimumHeight(100)
         image.setAlignment(Qt.AlignCenter)
-        layout.addWidget(image)
+        image.setScaledContents(True)
+        layout.addWidget(image, 1)
 
         # 设置标签
-        label = QLabel(scene_name)
+        label = QLabel(project_data.scene_name)
         label.setObjectName("frameLabel")  # 设置对象名称
-        label.setStyleSheet("font-size: 14px; font-weight: bold; color: white; padding-top: 5px;")  # 设置文字样式
-        label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(label)
+        label.setStyleSheet(
+            "font-size: 14px;font-weight:bold;color: #FFFFFF;padding-left:10px;border:none;font-family:Tahoma;")  # 设置文字样式
+        # label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(label, 0, Qt.AlignLeft | Qt.AlignCenter)
+        # set description
+        label_description = QLabel(project_data.description)
+        label_description.setStyleSheet(
+            "font-size: 12px; color: #e0e0e0;padding-left:10px;border:none;font-family:'Segoe UI';")  # 设置文字样式
+        layout.addWidget(label_description, 0, Qt.AlignLeft | Qt.AlignCenter)
 
-        layout.setContentsMargins(5, 5, 5, 5)  # 设置内边距
+        layout.setContentsMargins(0, 0, 0, 35)  # 设置内边距
+        layout.setSpacing(12)
 
         return card_frame
 
@@ -164,11 +181,11 @@ class ProjectUI(QWidget):
         self.update_layout()
         QWidget.resizeEvent(self, event)
 
-    def add_frames(self, project_data):
+    def add_frames(self, project_datas):
         self.frames = []
-        if project_data:
-            for i in project_data:
-                frame = self.create_frame(i.image_data, f"Scene: {i.scene_name} ")
+        if project_datas:
+            for project_data in project_datas:
+                frame = self.create_frame(project_data)
                 self.frames.append(frame)
             self.update_layout(force_update=True)  # 初始布局时强制更新
         else:

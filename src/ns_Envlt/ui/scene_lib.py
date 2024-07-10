@@ -9,12 +9,13 @@
 
 
 from PySide2 import QtCore, QtGui, QtWidgets
+import ns_Envlt.ui.resources.envlt_rc
 
 
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(423, 621)
+        Form.resize(479, 667)
         Form.setStyleSheet("QWidget#Form{\n"
                            "    background-color:#1A1F2B;\n"
                            "}\n"
@@ -79,7 +80,7 @@ class Ui_Form(object):
         self.head.setSizePolicy(sizePolicy)
         self.head.setMinimumSize(QtCore.QSize(32, 32))
         self.head.setText("")
-        self.head.setPixmap(QtGui.QPixmap(r"C:\dev\maya\Envlt\src\ns_Envlt\ui\resources\User.png"))
+        self.head.setPixmap(QtGui.QPixmap("resources/User.png"))
         self.head.setScaledContents(False)
         self.head.setObjectName("head")
         self.horizontalLayout_2.addWidget(self.head)
@@ -105,7 +106,7 @@ class Ui_Form(object):
         self.label.setMinimumSize(QtCore.QSize(32, 32))
         self.label.setMaximumSize(QtCore.QSize(32, 32))
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap(r"C:\dev\maya\Envlt\src\ns_Envlt\ui\resources\note.png"))
+        self.label.setPixmap(QtGui.QPixmap("resources/note.png"))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
         self.horizontalLayout_2.addWidget(self.label)
@@ -124,6 +125,7 @@ class Ui_Form(object):
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.tabWidget = QtWidgets.QTabWidget(self.tab_section)
+        self.tabWidget.setTabsClosable(False)
         self.tabWidget.setMovable(True)
         self.tabWidget.setObjectName("tabWidget")
         self.common = QtWidgets.QWidget()
@@ -133,6 +135,10 @@ class Ui_Form(object):
         self.add_tab.setObjectName("add_tab")
         self.tabWidget.addTab(self.add_tab, "")
         self.verticalLayout_3.addWidget(self.tabWidget)
+        self.horizontalSlider = QtWidgets.QSlider(self.tab_section)
+        self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.horizontalSlider.setObjectName("horizontalSlider")
+        self.verticalLayout_3.addWidget(self.horizontalSlider)
         self.verticalLayout.addWidget(self.tab_section)
 
         self.retranslateUi(Form)
@@ -146,4 +152,3 @@ class Ui_Form(object):
         self.date.setText(_translate("Form", "Good moring"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.common), _translate("Form", "Common"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.add_tab), _translate("Form", "+"))
-
