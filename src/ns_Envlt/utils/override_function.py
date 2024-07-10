@@ -26,7 +26,7 @@ class HoverableFrame(QFrame):
                 border-radius: 10px;
                 background-color: #414654;
             }
-            QWidget:hover {
+            QWidget#card_frame:hover {
                 border: 1px solid #e0e0e0;
             }
         """)
@@ -49,6 +49,7 @@ class HoverableFrame(QFrame):
     # def leaveEvent(self, event):
     #     super(HoverableFrame, self).leaveEvent(event)
     #
+
 
 """
 ConfirmDialog为重写的确认窗口

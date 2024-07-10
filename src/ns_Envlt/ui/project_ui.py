@@ -115,6 +115,7 @@ class ProjectUI(QWidget):
 
         # 创建一个HoverableFrame
         card_frame = override_function.HoverableFrame()
+        card_frame.setObjectName("card_frame")
         # Create a shadow effect
         shadow = QGraphicsDropShadowEffect(self)
         shadow.setBlurRadius(15)
