@@ -8,6 +8,7 @@
 import datetime
 import getpass
 import io
+import json
 import os
 from enum import Enum
 from importlib import reload
@@ -20,6 +21,7 @@ from maya.OpenMayaUI import MQtUtil_mainWindow
 from shiboken2 import wrapInstance
 
 from ns_Envlt.config.json_config_factory import JsonConfigFactory
+from ns_Envlt.temp_pkg import temp
 from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import master_db, asset_db
 from ns_Envlt.envlt_log import log_factory
@@ -56,14 +58,20 @@ class mainWindow(QWidget):
         self.project_refresh.connect(self.refresh_project_page)
         # time
         self.now_time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        self.env_temp = temp.EnvltTemp("Envlt")
+        temp_size_data = self.env_temp.read_config_file("window_size.json")
+
+        self.window_size = None
         self.envlt = Envlt.Ui_mainWindows()
         self.envlt.setupUi(self)
         self.setParent(wrapInstance(int(MQtUtil_mainWindow()), QWidget))
         self.setWindowFlags(Qt.Window)
         self.init_window()
         self.init_slot()
+        # resize last change
+        if temp_size_data:
+            self.resize(temp_size_data["width"], temp_size_data["height"])
         self.log = log_factory.LogFactory("Envlt", True)
-        # self.create_scene_lib_ui()
         self.show()
 
     def init_window(self):
@@ -413,3 +421,12 @@ class mainWindow(QWidget):
     #     _scene_lib = scene_lib.Ui_Form()
     #     _scene_lib.setupUi(self.widget_scene_lib)
     #     self.widget_scene_lib.show()
+
+    def resizeEvent(self, event):
+        self.window_size = event.size()
+
+    def closeEvent(self, event):
+        if not self.window_size:
+            return
+        size = json.dumps({"width": self.window_size.width(), "height": self.window_size.height()})
+        self.env_temp.create_config_file("window_size.json", size)
