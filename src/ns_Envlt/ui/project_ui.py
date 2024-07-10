@@ -115,6 +115,13 @@ class ProjectUI(QWidget):
 
         # 创建一个HoverableFrame
         card_frame = override_function.HoverableFrame()
+        # Create a shadow effect
+        shadow = QGraphicsDropShadowEffect(self)
+        shadow.setBlurRadius(15)
+        shadow.setXOffset(5)
+        shadow.setYOffset(5)
+        shadow.setColor(QColor(0, 0, 0, 160))
+        card_frame.setGraphicsEffect(shadow)
         card_frame.setFrameShape(QFrame.Box)
         card_frame.setFrameShadow(QFrame.Raised)
         card_frame.setFixedSize(self.max_width, self.max_height)  # 设置固定大小
