@@ -60,6 +60,14 @@ impl ImageSize {
     }
 }
 
+#[pyclass]
+struct Image2 {
+    image_path: String,
+    save_path: String,
+}
+#[pymethods]
+impl Image2 {}
+
 #[pymodule]
 #[pyo3(name = "envlt_image")]
 fn envlt_image_rs(m: &Bound<'_, PyModule>) -> PyResult<()> {
