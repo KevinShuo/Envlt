@@ -1,0 +1,71 @@
+@startuml
+class Envlt {
+    + new_project(project_data: ProjectData): Project
+    + remove_project(project_data: ProjectData): bool
+    + get_projects(): List<Project>
+    + get_project(project_name: str): Project
+}
+
+class Project {
+    + project_data: ProjectData
+    + new_scene(scene_name: str): Scene
+    + remove_scene(scene_name: str): bool
+    + view_project()
+}
+
+class Scene {
+    + name: str
+    + asset_count: int
+    + get_asset(asset_name: str): AssetData
+    + get_assets(): List<AssetData>
+    + get_count(): int
+}
+class Asset{
+    + new_asset(asset_name: str): AssetData
+    + remove_asset(asset_name: str): bool
+    + set_enable(enable: bool)
+}
+
+class AssetData {
+    + name: str
+    + path: str
+    + type: str
+    + image: ImageData
+    + description: str
+    + labels: List<str>
+    + enable: bool
+}
+
+class ProjectData {
+    + name: str
+    + view: ImageData
+    + description: str
+    + create_data: str
+    + modify_data: str
+    + create_user: str
+    + labels: List<str>
+    + image_data(): ImageData
+}
+
+class ImageFactory {
+    + resize_image(image_path: str, resize: int): ImageData
+    + upload_image(image_data: ImageData): bool
+}
+
+class ImageData {
+    + original: bytes
+    + small: bytes
+}
+
+Envlt --> Project
+Project o-- Scene
+ProjectData --> ImageData: contains
+Project ..> ProjectData: contains
+ImageFactory ..> ImageData: creates
+ProjectData ..> ImageFactory: uses
+Scene --> Asset
+Scene ..> AssetData: contains
+Asset ..> AssetData: contains
+AssetData ..> ImageFactory: uses
+AssetData --> ImageData: contains
+@enduml

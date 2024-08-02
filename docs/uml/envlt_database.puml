@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+package "Envlt"{
+    [project]
+    [scene]
+    [asset]
+}
+database "Envlt_db"{
+    [project_db]
+    [scene_db]
+}
+
+[project] --> "project_db"
+[project] --> [scene]
+[scene]-->[asset]
+[project_db]..>[scene_db]
+[scene]..>[scene_db]
+[asset]..>[scene_db]
+@enduml
