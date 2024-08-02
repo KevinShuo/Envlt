@@ -20,6 +20,15 @@ class HoverableFrame(QFrame):
 
     def __init__(self, parent=None):
         super(HoverableFrame, self).__init__(parent)
+        # Create a shadow effect
+        shadow = QGraphicsDropShadowEffect(self)
+        shadow.setBlurRadius(15)
+        shadow.setXOffset(5)
+        shadow.setYOffset(5)
+        shadow.setColor(QColor(0, 0, 0, 160))
+        self.setGraphicsEffect(shadow)
+        self.setFrameShape(QFrame.Box)
+        self.setFrameShadow(QFrame.Raised)
         self.setStyleSheet("""
             QFrame {
                 border: 1px solid #414654;

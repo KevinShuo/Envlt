@@ -35,7 +35,7 @@ class ProjectUI(QWidget):
         self.db_projects = master_db.EnvltProjectDatabase()
         self.db_assets = asset_db.EnvltAssetDB()
 
-        self.max_width = 230
+        self.max_width = 200
         self.max_height = 220
         self.default_image_size = self.max_width
         self.current_columns = -1
@@ -74,7 +74,7 @@ class ProjectUI(QWidget):
 
     def init_layout(self):
         self.scroll_area = QScrollArea(self)
-        self.scroll_area.setStyleSheet("background-color: #292e3b;")
+        self.scroll_area.setStyleSheet("QScrollArea{ background-color: #292e3b;border-radius: 8px; }")
         self.scroll_area.setWidgetResizable(True)
         self.scroll_content = QWidget()
         self.scroll_layout = QGridLayout(self.scroll_content)
@@ -116,15 +116,7 @@ class ProjectUI(QWidget):
         # 创建一个HoverableFrame
         card_frame = override_function.HoverableFrame()
         card_frame.setObjectName("card_frame")
-        # Create a shadow effect
-        shadow = QGraphicsDropShadowEffect(self)
-        shadow.setBlurRadius(15)
-        shadow.setXOffset(5)
-        shadow.setYOffset(5)
-        shadow.setColor(QColor(0, 0, 0, 160))
-        card_frame.setGraphicsEffect(shadow)
-        card_frame.setFrameShape(QFrame.Box)
-        card_frame.setFrameShadow(QFrame.Raised)
+
         card_frame.setFixedSize(self.max_width, self.max_height)  # 设置固定大小
         card_frame.clicked.connect(self.on_frame_clicked)  # 连接点击信号到槽函数
         card_frame.rightClicked.connect(self.on_frame_right_clicked)
