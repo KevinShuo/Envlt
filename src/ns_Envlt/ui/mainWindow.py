@@ -26,11 +26,11 @@ from ns_Envlt.data import database_data
 from ns_Envlt.envlt_db import master_db, asset_db
 from ns_Envlt.envlt_log import log_factory
 from ns_Envlt.error import database_error
-from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui, scene_lib
+from ns_Envlt.ui import Envlt, envlt_messagebox, project_ui
 from ns_Envlt.utils import os_util
 
 reload(project_ui)
-reload(scene_lib)
+# reload(scene_lib)
 reload(os_util)
 reload(Envlt)
 reload(master_db)

@@ -23,10 +23,6 @@ QFrame#frame{
 	border-radius:20px;
 	background-color:#414654;
 }
-QFrame#choose_page{
-	border:1px solid #ffecda;
-	border-radius:9px;
-}
 
 QFrame#frame_3{
 	background-color:#292e3b;

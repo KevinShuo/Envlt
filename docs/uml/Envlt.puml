@@ -1,5 +1,6 @@
 @startuml
 class Envlt {
+    + project_data: List<ProjectData>
     + new_project(project_data: ProjectData): Project
     + remove_project(project_data: ProjectData): bool
     + get_projects(): List<Project>
