@@ -1,11 +1,16 @@
 use crate::dataclass::scene_data::SceneData;
-use pyo3::exceptions::PyAttributeError;
 use pyo3::{pyclass, pymethods, PyResult};
 use sqlite::{Connection, State, Statement};
+use std::fmt::{Debug, Formatter};
 
 #[pyclass]
 pub struct EnvltDataBase {
     connection: Connection,
+}
+impl Debug for EnvltDataBase {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "envlt db")
+    }
 }
 #[pymethods]
 impl EnvltDataBase {
@@ -59,14 +64,19 @@ WHERE type = 'table'
         tables
     }
 
-    pub fn get_scenes(&self, project_name: &str) -> Vec<SceneData> {
+    pub fn get_scenes(&self, project_name: &str) -> Option<Vec<SceneData>> {
         let mut v = vec![];
         let query = format!(r"SELECT * FROM {}", project_name);
-        let mut statement = self.connection.prepare(query).expect("Has not this table");
-        while let Ok(State::Row) = statement.next() {
-            v.push(get_scene_data(&mut statement))
+        match self.connection.prepare(query) {
+            Ok(mut statement) => {
+                while let Ok(State::Row) = statement.next() {
+                    v.push(get_scene_data(&mut statement))
+                }
+            }
+            Err(err) => return None,
         }
-        v
+
+        Some(v)
     }
 
     pub fn get_scene(&self, project_name: &str, scene_name: &str) -> Option<SceneData> {
@@ -74,11 +84,15 @@ WHERE type = 'table'
             "SELECT * FROM {} where name = '{}'",
             project_name, scene_name
         );
-        let mut statement = self.connection.prepare(query).unwrap();
-        while let Ok(State::Row) = statement.next() {
-            return Some(get_scene_data(&mut statement));
+        match self.connection.prepare(query) {
+            Ok(mut statement) => {
+                while let Ok(State::Row) = statement.next() {
+                    return Some(get_scene_data(&mut statement));
+                }
+                None
+            }
+            Err(err) => None,
         }
-        return None;
     }
 
     pub fn drop_table(&self, table: &str) -> PyResult<()> {
@@ -86,7 +100,7 @@ WHERE type = 'table'
         Ok(self.connection.execute(query).unwrap())
     }
 
-    fn check_table_exists(&self, table_name: &str) -> bool {
+    pub fn check_table_exists(&self, table_name: &str) -> bool {
         let query = format!(
             "SELECT * FROM sqlite_master where type = 'table' and name = '{}'",
             table_name

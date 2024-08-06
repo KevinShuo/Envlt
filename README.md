@@ -10,47 +10,6 @@
 
 ***
 
-### 2024/07/03
-
-- [x] 更新envlt`操作图片`的api(rust)
-```python
-from ns_Envlt.envlt_image import Image
-
-image = Image(r"C:\Users\wangshuo\Pictures\Screenshots\屏幕截图 2023-11-15 102317.png",
-              r"C:\dev\maya\Envlt\src\envlt_image_rs\tests\aaa.png")
-# 缩放图片分辨率
-image.resize_image(960, 540)
-# 获取图片分辨率
-image_size = image.get_image_size()
-print(f"width: {image_size.width} height: {image_size.height}")
-```
-- [x] `ns_Envlt/utils`目录下新增`info_fuction.py`用于消息通知 
-```python
-# Sample
-from ns_Envlt.utils import info_function
-
-def delete_notification(self, scene_name):
-    title = f"Notification {len(info_function.NotificationWidget.instances) + 1}"
-    message = f"Scene {scene_name} has been Deleted."
-    new_notification = info_function.NotificationWidget(title, message)
-
-```
-- [x] 修改`mainWindow`下创建和克隆时上传图片的逻辑，将缩略图和原图的二进制数据保存为一个字典.根据不同情况调用不同图片
-  - [x] 生成缩略图所用模块为`PIL`和`io`
-  - [x] 在二进制数据字典上传数据库时将其转换为了`字符串`。后续调用前需使用将其还原为`字典`
-```python
-"""
-image_data_dict = {
-                "original": original_image_data,
-                "small": thumbnail_data
-            }
-"""
-```
-- [x] 修改`image_window`模块.
-  - [x] 现在打开参考图时可以调整显示比例，不会因为原图过大而导致看不到完整图片
-  - [x] 将`ImageWindow `类继承修改为`QWidget`,这样就不会在打开参考图时阻塞窗口
-***
-
 ### 2024/07/02
 
 - [x] 更新`project_ui.py`,添加场景搜索功能
@@ -101,7 +60,7 @@ db_asset = asset_db.EnvltAssetDB()
 - [x] `mainWindow.py`下新增`refresh_project_page`,用以实现在新建，克隆或删除场景后实时更新`project`页面。
 - [x] `mainWindow.py`下新增`init_create_scene_check_label`,并完成`check_scene_exists`。用于实现重复场景名提示
 
-- [x] 添加config类 用来设置/读取配置项
+- [x] 添加config类 用来设置/读取配置项 
     - [x] json_config_factory
 
 ```python
