@@ -7,11 +7,11 @@ use crate::project::Projects;
 use pyo3::prelude::*;
 
 #[pyclass]
-struct Envlt_rs {
+struct EnvltRs {
     db: EnvltDataBase,
 }
 #[pymethods]
-impl Envlt_rs {
+impl EnvltRs {
     #[new]
     pub fn new(db: &str) -> Self {
         let env_db = EnvltDataBase::new(db).unwrap();
@@ -29,11 +29,11 @@ impl Envlt_rs {
 
 #[cfg(test)]
 mod tests {
-    use crate::Envlt_rs;
+    use crate::EnvltRs;
 
     #[test]
     fn test_new_project() {
-        let e = Envlt_rs::new(r"C:\dev\maya\Envlt\src\database\envlt_db.sqlite");
+        let e = EnvltRs::new(r"C:\dev\maya\Envlt\src\database\envlt_db.sqlite");
         e.new_project("my_project_1");
         println!("{:#?}",e.get_all_projects());
     }
